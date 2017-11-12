@@ -72,4 +72,8 @@ public class AudioRecorder {
         return stringBuilder.toString();
     }
 
+    public String getPath() {
+        return this.AudioSavePathInDevice;
+    }
+
 }
