@@ -1,14 +1,13 @@
 package com.fyp.mrisecondscreen;
 
-import android.Manifest;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.CountDownTimer;
-import android.os.Environment;
-import android.support.annotation.NonNull;
+
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -111,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else {
                     requestPermission();
+                    mic.setEnabled(true);
                 }
 
             }
@@ -290,11 +290,14 @@ public class MainActivity extends AppCompatActivity {
             {
                 // Do something awesome here
                 Toast.makeText(ctx, result, Toast.LENGTH_LONG).show();
+                BannerAd runningAd = new BannerAd(result);
+                AdDialog adDialog = new AdDialog();
+                adDialog.showDialog(MainActivity.this, runningAd);
 
             }
             else
             {
-                Toast.makeText(ctx,"Request failed, network or server issue",Toast.LENGTH_SHORT).show();
+                Toast.makeText(ctx,"Try again! Request failed, network or server issue",Toast.LENGTH_SHORT).show();
             }
         }
     }

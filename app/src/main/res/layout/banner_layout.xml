@@ -20,6 +20,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="200dp"
         android:textAllCaps="true"
         android:text="Congratulations! you have won Rs 1000 Credit from CocaCola company"
         android:textColor="#6e6e6e"
