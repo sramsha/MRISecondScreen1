@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                mic.setEnabled(false);
                 if(checkPermission()) {
 
                     recorder = new AudioRecorder();
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                     progressBar.setVisibility(View.VISIBLE);
 
                     // start timer for 10sec and then stop recorder
-                    CountDownTimer countDowntimer = new CountDownTimer(10000, 1000) {
+                    CountDownTimer countDowntimer = new CountDownTimer(5000, 1000) {
                         public void onTick(long millisUntilFinished) {
                         }
 
@@ -90,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
                                 recorder.stop();
                                 recordText.setVisibility(View.GONE);
                                 progressBar.setVisibility(View.GONE);
+                                mic.setEnabled(true);
 
                                 // send recorded clip to server via AsyncTask
                                 new GetAdContent("http://192.168.8.100:5000/match/", recorder.getPath(), MainActivity.this).execute("WubbaLubbaDubDub");
@@ -149,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
             p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             p.setCancelable(false);
             p.show();
-            Toast.makeText(getApplicationContext(), "Here to Server", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), "Here to Server", Toast.LENGTH_LONG).show();
         }
 
 
