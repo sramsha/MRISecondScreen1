@@ -41,6 +41,8 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String SERVER_URL = "http://192.168.8.100:5000/match/";
+
     public static final int RequestPermissionCode = 1;
 
     private static ImageView mic;
@@ -86,14 +88,17 @@ public class MainActivity extends AppCompatActivity {
 
                         public void onFinish() {
                             try {
-                                Toast.makeText(getApplicationContext(), "Sending audio to Server", Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getApplicationContext(), "Sending audio to Server", Toast.LENGTH_LONG).show();
                                 recorder.stop();
                                 recordText.setVisibility(View.GONE);
                                 progressBar.setVisibility(View.GONE);
                                 mic.setEnabled(true);
 
+
+
                                 // send recorded clip to server via AsyncTask
-                                new GetAdContent("http://192.168.8.100:5000/match/", recorder.getPath(), MainActivity.this).execute("WubbaLubbaDubDub");
+                                new GetAdContent(SERVER_URL, recorder.getPath(), MainActivity.this).execute("WubbaLubbaDubDub");
+
 
                             } catch (IOException e) {
                                 // TODO Auto-generated catch block
@@ -289,10 +294,19 @@ public class MainActivity extends AppCompatActivity {
             if(result != null)
             {
                 // Do something awesome here
-                Toast.makeText(ctx, result, Toast.LENGTH_LONG).show();
+                //Toast.makeText(ctx, result, Toast.LENGTH_LONG).show();
+
+                //Parse json response into BannerAd
                 BannerAd runningAd = new BannerAd(result);
+
+                // Make a AdDialog
                 AdDialog adDialog = new AdDialog();
+
+                // Populate the AdDialog with BannerAd
                 adDialog.showDialog(MainActivity.this, runningAd);
+
+                // Finally delete the sample clip
+                recorder.deleteClip();
 
             }
             else

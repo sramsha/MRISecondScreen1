@@ -3,6 +3,7 @@ package com.fyp.mrisecondscreen;
 import android.media.MediaRecorder;
 import android.os.Environment;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
@@ -74,6 +75,11 @@ public class AudioRecorder {
 
     public String getPath() {
         return this.AudioSavePathInDevice;
+    }
+
+    public void deleteClip() {
+        File file = new File(AudioSavePathInDevice);
+        boolean deleted = file.delete();
     }
 
 }

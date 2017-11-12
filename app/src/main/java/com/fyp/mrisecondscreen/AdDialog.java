@@ -6,10 +6,11 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class AdDialog {
 
-    public void showDialog(Activity activity, BannerAd ad){
+    public void showDialog(final Activity activity, BannerAd ad){
         final Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
@@ -26,6 +27,7 @@ public class AdDialog {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                Toast.makeText(activity, "Offer/Voucher Redeemed!", Toast.LENGTH_LONG).show();
             }
         });
 
