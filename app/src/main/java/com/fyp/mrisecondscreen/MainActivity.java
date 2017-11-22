@@ -3,6 +3,8 @@ package com.fyp.mrisecondscreen;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -10,6 +12,7 @@ import android.os.CountDownTimer;
 
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,8 +22,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.login.LoginManager;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -34,6 +40,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -51,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static AudioRecorder recorder;
 
+    SessionManagement session;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +70,30 @@ public class MainActivity extends AppCompatActivity {
         mic = (ImageView) findViewById(R.id.mic);
         recordText = (TextView) findViewById(R.id.recordText);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        TextView main_nameTextView = (TextView) findViewById(R.id.main_name);
+        TextView main_emailTextView = (TextView) findViewById(R.id.main_email);
+        session = new SessionManagement(getApplicationContext());
+        String name;
+        String email;
+
+        if (session.isLoggedIn())
+        {
+            // get user data from session
+            HashMap<String, String> user = session.getUserDetails();
+            // name
+            name = user.get(SessionManagement.KEY_NAME);
+            // email
+            email = user.get(SessionManagement.KEY_EMAIL);
+        }
+        else
+        {
+            Intent intent = getIntent();
+            name = intent.getStringExtra("name");
+            email = intent.getStringExtra("email");
+        }
+
+        main_nameTextView.setText("Name: " + name);
+        main_emailTextView.setText("Email: " + email);
 
         //tap on mic
         mic.setOnClickListener(new View.OnClickListener() {
@@ -350,6 +383,34 @@ public class MainActivity extends AppCompatActivity {
                 RECORD_AUDIO);
         return result == PackageManager.PERMISSION_GRANTED &&
                 result1 == PackageManager.PERMISSION_GRANTED;
+    }
+
+    @Override
+    public void onBackPressed() {
+        doExit();
+    }
+
+    private void doExit() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+                MainActivity.this);
+
+        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Session deletion
+                session.logoutUser();
+                // Facebook logout
+                LoginManager.getInstance().logOut();
+                System.exit(0);
+            }
+        });
+
+        alertDialog.setNegativeButton("No", null);
+
+        alertDialog.setMessage("Do you want to exit the application?");
+        alertDialog.setTitle("AdSync");
+        alertDialog.show();
     }
 }
 

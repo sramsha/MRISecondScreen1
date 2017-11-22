@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MRISecondScreen</string>
+    <string name="facebook_app_id">360259361089404</string>
+    <string name="fb_login_protocol_scheme">fb360259361089404</string>
 </resources>
