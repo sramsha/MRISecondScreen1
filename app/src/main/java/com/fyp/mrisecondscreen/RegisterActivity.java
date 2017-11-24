@@ -72,18 +72,16 @@ public class RegisterActivity extends AppCompatActivity {
                             RegisterActivity.this.startActivity(intent);
                             RegisterActivity.this.finish();
                         }
-                        else {
-                            if (Objects.equals(serverReply, "USERNAME_NOT_AVAILABLE")){
+                        else if (Objects.equals(serverReply, "USERNAME_NOT_AVAILABLE")) {
                                 Toast.makeText(getApplicationContext(), "Please choose a different username as it is not available", Toast.LENGTH_LONG).show();
                             }
-                            else {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                                builder.setMessage("Registration failed due to unknown reasons")
-                                        .setNegativeButton("Retry", null)
-                                        .create()
-                                        .show();
-                                Toast.makeText(getApplicationContext(), "Server Response: "+serverReply, Toast.LENGTH_LONG).show();
-                            }
+                        else {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+                            builder.setMessage("Registration failed due to unknown reasons")
+                                    .setNegativeButton("Retry", null)
+                                    .create()
+                                    .show();
+                            Toast.makeText(getApplicationContext(), "Server Response: "+serverReply, Toast.LENGTH_LONG).show();
                         }
 
                     }
