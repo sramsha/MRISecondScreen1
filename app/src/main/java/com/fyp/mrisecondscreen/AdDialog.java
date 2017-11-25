@@ -2,6 +2,7 @@ package com.fyp.mrisecondscreen;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -26,16 +27,21 @@ public class AdDialog {
         redeemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
                 Toast.makeText(activity, "Offer/Voucher Redeemed!", Toast.LENGTH_LONG).show();
+                dialog.dismiss();
             }
         });
 
-        Button cancelButton = (Button) dialog.findViewById(R.id.banner_cancel);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
+        Button laterButton = (Button) dialog.findViewById(R.id.banner_cancel);
+        laterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(activity, "Offer/Voucher Saved!", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(dialog.getContext(), OffersActivity.class);
                 dialog.dismiss();
+                dialog.getContext().startActivity(intent);
+
+
             }
         });
 
