@@ -28,7 +28,7 @@ public class OffersActivity extends AppCompatActivity {
                 "Shan - Food Challenge worth 5,000,000"
         };
 
-        // Make ArrayList of loaded Offers
+        /*// Make ArrayList of loaded Offers
         List<String> offersList = new ArrayList<>(Arrays.asList(offersArray));
 
         // ArrayAdapter to hold data for ListView
@@ -36,7 +36,25 @@ public class OffersActivity extends AppCompatActivity {
 
         //Bind ListView to Adapter
         ListView offersListView = (ListView) findViewById(R.id.list_offers);
-        offersListView.setAdapter(offerAdapter);
+        offersListView.setAdapter(offerAdapter);*/
+
+        // Construct the data source
+        ArrayList<BannerAd> arrayOfUsers = new ArrayList<BannerAd>();
+        // Create the adapter to convert the array to views
+        OffersAdapter adapter = new OffersAdapter(this, arrayOfUsers);
+        // Attach the adapter to a ListView
+        ListView listView = (ListView) findViewById(R.id.list_offers);
+        listView.setAdapter(adapter);
+
+        // Add item to adapter
+        BannerAd newUser = new BannerAd("CocaCola Rs 1000 Credit Offer", "CocaCola", "Blala, noob doob wa noob loob wa la noob");
+        adapter.add(newUser);
+        // Or even append an entire new collection
+        // Fetching some data, data has now returned
+        // If data was JSON, convert to ArrayList of User objects.
+        /*JSONArray jsonArray = ...;
+        ArrayList<User> newUsers = User.fromJson(jsonArray)
+        adapter.addAll(newUsers);*/
 
     }
 }

@@ -15,6 +15,12 @@ public class BannerAd {
         JSONParse(response);
     }
 
+    public BannerAd(String title, String brandName, String adcontent) {
+        this.title = title;
+        this.brandName = brandName;
+        this.adcontent = adcontent;
+    }
+
     public String getTitle() {
         return title;
     }
