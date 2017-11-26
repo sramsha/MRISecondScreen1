@@ -1,4 +1,4 @@
-package com.fyp.mrisecondscreen;
+package com.fyp.mrisecondscreen.entity;
 
 
 import android.util.Log;

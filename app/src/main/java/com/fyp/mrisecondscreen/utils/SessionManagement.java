@@ -1,4 +1,4 @@
-package com.fyp.mrisecondscreen;
+package com.fyp.mrisecondscreen.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;

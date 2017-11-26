@@ -1,4 +1,4 @@
-package com.fyp.mrisecondscreen;
+package com.fyp.mrisecondscreen.network;
 
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;

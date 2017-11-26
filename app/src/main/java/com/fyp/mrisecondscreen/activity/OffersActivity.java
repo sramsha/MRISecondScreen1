@@ -1,17 +1,20 @@
-package com.fyp.mrisecondscreen;
+package com.fyp.mrisecondscreen.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import com.fyp.mrisecondscreen.entity.BannerAd;
+import com.fyp.mrisecondscreen.utils.OffersAdapter;
+import com.fyp.mrisecondscreen.R;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class OffersActivity extends AppCompatActivity {
-
-    ArrayAdapter<String> offerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,13 +23,7 @@ public class OffersActivity extends AppCompatActivity {
 
         // Get saved offers from DB
         // Right now, using Fake data
-        String[] offersArray = {
-                "CocaCola - 1000 Rs Credit",
-                "Nurpur - Discount Voucher worth Rs 500",
-                "Exide - Free Battery Offer",
-                "Sprite - Participate to win Rs 1,000,000",
-                "Shan - Food Challenge worth 5,000,000"
-        };
+
 
         /*// Make ArrayList of loaded Offers
         List<String> offersList = new ArrayList<>(Arrays.asList(offersArray));
@@ -41,10 +38,17 @@ public class OffersActivity extends AppCompatActivity {
         // Construct the data source
         ArrayList<BannerAd> arrayOfUsers = new ArrayList<BannerAd>();
         // Create the adapter to convert the array to views
-        OffersAdapter adapter = new OffersAdapter(this, arrayOfUsers);
+        final OffersAdapter adapter = new OffersAdapter(this, arrayOfUsers);
         // Attach the adapter to a ListView
         ListView listView = (ListView) findViewById(R.id.list_offers);
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getApplicationContext(), adapter.getItem(position).getAdcontent(), Toast.LENGTH_LONG).show();
+            }
+        });
 
         // Add item to adapter
         BannerAd newUser = new BannerAd("CocaCola Rs 1000 Credit Offer", "CocaCola", "Blala, noob doob wa noob loob wa la noob");

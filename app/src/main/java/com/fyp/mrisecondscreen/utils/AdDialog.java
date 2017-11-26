@@ -1,4 +1,4 @@
-package com.fyp.mrisecondscreen;
+package com.fyp.mrisecondscreen.utils;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -8,6 +8,10 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.fyp.mrisecondscreen.R;
+import com.fyp.mrisecondscreen.activity.OffersActivity;
+import com.fyp.mrisecondscreen.entity.BannerAd;
 
 public class AdDialog {
 

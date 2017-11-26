@@ -1,8 +1,11 @@
-package com.fyp.mrisecondscreen;
+package com.fyp.mrisecondscreen.activity;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.fyp.mrisecondscreen.R;
+import com.fyp.mrisecondscreen.utils.SessionManagement;
 
 public class StartingActivity extends AppCompatActivity {
 

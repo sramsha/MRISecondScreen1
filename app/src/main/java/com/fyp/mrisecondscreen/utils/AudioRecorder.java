@@ -1,4 +1,4 @@
-package com.fyp.mrisecondscreen;
+package com.fyp.mrisecondscreen.utils;
 
 import android.media.MediaRecorder;
 import android.os.Environment;

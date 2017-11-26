@@ -1,4 +1,4 @@
-package com.fyp.mrisecondscreen;
+package com.fyp.mrisecondscreen.activity;
 
 
 import android.app.ProgressDialog;
@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.CountDownTimer;
 
@@ -23,10 +22,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
+import com.fyp.mrisecondscreen.utils.AdDialog;
+import com.fyp.mrisecondscreen.utils.AudioRecorder;
+import com.fyp.mrisecondscreen.entity.BannerAd;
+import com.fyp.mrisecondscreen.R;
+import com.fyp.mrisecondscreen.utils.SessionManagement;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
