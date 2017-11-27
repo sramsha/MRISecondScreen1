@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
+import com.fyp.mrisecondscreen.db.DatabaseHelper;
 import com.fyp.mrisecondscreen.utils.AdDialog;
 import com.fyp.mrisecondscreen.utils.AudioRecorder;
 import com.fyp.mrisecondscreen.entity.BannerAd;
@@ -44,6 +45,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.concurrent.Executors;
 
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -51,7 +53,7 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String SERVER_URL = "http://192.168.8.100:5000/match/";
+    private static final String SERVER_URL = "http://192.168.8.100:5000/match";
 
     public static final int RequestPermissionCode = 1;
 
@@ -61,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static AudioRecorder recorder;
 
+    BannerAd runningAd;
     SessionManagement session;
 
     @Override
@@ -212,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(String... strings) {
 
             int serverResponseCode = 0;
+            String serverResponseMessage=null;
             Log.v(TAG, "Inside BackgroundTHread");
             HttpURLConnection connection;
             DataOutputStream dataOutputStream;
@@ -283,17 +287,9 @@ public class MainActivity extends AppCompatActivity {
 
                     serverResponseCode = connection.getResponseCode();
                     InputStream is = new BufferedInputStream(connection.getInputStream());
-                    final String serverResponseMessage = readStream(is);
+                    serverResponseMessage = readStream(is);
 
-                    Log.i(TAG, "Server Response is: " + serverResponseMessage + ": " + serverResponseCode);
-                    final JSONObject jobj;
-
-                    jobj = new JSONObject(serverResponseMessage);
-                    final String title = jobj.getString("song_name");
-                    final String content = jobj.getString("adcontent");
-                    final String time = jobj.getString("match_time");
-                    final String confidence = jobj.getString("confidence");
-
+                    Log.v("Server Response Code", String.valueOf(serverResponseCode));
 
                     //closing the input and output streams
                     fileInputStream.close();
@@ -311,10 +307,11 @@ public class MainActivity extends AppCompatActivity {
 
                 } catch (IOException e) {
                     e.printStackTrace();
-                    return "Cannot ReadWrite File";
-                } catch (JSONException e) {
+                    return "Server Error";
+                }
+                catch (Exception e) {
                     e.printStackTrace();
-                    return  "JSON error";
+                    return null;
                 }
 
             }
@@ -327,13 +324,25 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             p.dismiss();
-            if(result != null)
+            if(result != null && result != "Server Error" && result != "File Not Found" && result != "Url Error")
             {
+                Log.e("/match/ Response", result);
                 // Do something awesome here
-                //Toast.makeText(ctx, result, Toast.LENGTH_LONG).show();
+                Toast.makeText(ctx, result, Toast.LENGTH_LONG).show();
 
                 //Parse json response into BannerAd
-                BannerAd runningAd = new BannerAd(result);
+                final BannerAd runningAd = new BannerAd(result);
+
+                //save offer
+                DatabaseHelper databaseHelper = DatabaseHelper.getInstance(this.ctx);
+                long status = databaseHelper.addWithOnConflict(runningAd);
+                if(-1 != status) {
+                    Toast.makeText(ctx, "Offer saved successfully with ID of : " + status, Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(ctx, "Ad viewed already", Toast.LENGTH_SHORT).show();
+                    // TODO: Handle further logic
+                }
 
                 // Make a AdDialog
                 AdDialog adDialog = new AdDialog();
@@ -341,13 +350,17 @@ public class MainActivity extends AppCompatActivity {
                 // Populate the AdDialog with BannerAd
                 adDialog.showDialog(MainActivity.this, runningAd);
 
+
+
+                //Toast.makeText(ctx,"Offer saved successfully",Toast.LENGTH_SHORT).show();
+
                 // Finally delete the sample clip
-                recorder.deleteClip();
+                //recorder.deleteClip();
 
             }
             else
             {
-                Toast.makeText(ctx,"Try again! Request failed, network or server issue",Toast.LENGTH_SHORT).show();
+                Toast.makeText(ctx,"Try again! " + result, Toast.LENGTH_SHORT).show();
             }
         }
     }

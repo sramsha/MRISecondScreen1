@@ -15,6 +15,8 @@ import com.fyp.mrisecondscreen.entity.BannerAd;
 
 public class AdDialog {
 
+
+
     public void showDialog(final Activity activity, BannerAd ad){
         final Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -22,10 +24,10 @@ public class AdDialog {
         dialog.setContentView(R.layout.banner_layout);
 
         TextView title = (TextView) dialog.findViewById(R.id.banner_title);
-        title.setText(ad.getTitle());
+        title.setText(ad.getOfferTitle());
 
         TextView text = (TextView) dialog.findViewById(R.id.banner_text);
-        text.setText(ad.getAdcontent());
+        text.setText(ad.getOfferContent());
 
         Button redeemButton = (Button) dialog.findViewById(R.id.banner_redeem);
         redeemButton.setOnClickListener(new View.OnClickListener() {
@@ -44,6 +46,7 @@ public class AdDialog {
                 Intent intent = new Intent(dialog.getContext(), OffersActivity.class);
                 dialog.dismiss();
                 dialog.getContext().startActivity(intent);
+
 
 
             }

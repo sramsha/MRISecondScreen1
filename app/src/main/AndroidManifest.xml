@@ -25,9 +25,7 @@
         </activity>
         <activity android:name=".activity.LoginActivity" />
         <activity android:name=".activity.RegisterActivity" />
-        <activity android:name=".activity.StartingActivity">
-
-        </activity>
+        <activity android:name=".activity.StartingActivity"></activity>
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -49,7 +47,8 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.OffersActivity"></activity>
+        <activity android:name=".activity.OffersActivity" />
+        <activity android:name=".activity.OfferDetail"></activity>
     </application>
 
 </manifest>

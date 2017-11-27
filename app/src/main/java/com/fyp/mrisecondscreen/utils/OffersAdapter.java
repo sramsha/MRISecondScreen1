@@ -35,7 +35,7 @@ public class OffersAdapter extends ArrayAdapter<BannerAd>{
         TextView tvHeading = (TextView) convertView.findViewById(R.id.offer_heading);
         ImageView offerImage = (ImageView) convertView.findViewById(R.id.offer_image);
         // Populate the data into the template view using the data object
-        tvHeading.setText(offer.getTitle());
+        tvHeading.setText(offer.getOfferTitle());
         //offerImage.setImageResource(R.drawable.com_facebook_button_icon);
         // Return the completed view to render on screen
         return convertView;
