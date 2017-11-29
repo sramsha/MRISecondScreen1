@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="25dp"
+    android:paddingBottom="25dp"
+    android:paddingRight="10dp"
+    android:paddingLeft="10dp">
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/com_facebook_button_icon_blue"
+        android:id="@+id/offer_image"
+        android:padding="5dp"
+        android:scaleType="fitCenter"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAllCaps="true"
+        android:textSize="22sp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:text="CocaCola New Offer"
+        android:id="@+id/offer_heading"
+        android:layout_toRightOf="@id/offer_image"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAllCaps="true"
+        android:textSize="16sp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:text="Tap for more info"
+        android:layout_below="@id/offer_heading"
+        android:layout_toRightOf="@id/offer_image"
+        android:textStyle="bold"/>
+
+
+</RelativeLayout>

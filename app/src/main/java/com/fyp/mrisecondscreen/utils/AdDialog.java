@@ -1,14 +1,21 @@
-package com.fyp.mrisecondscreen;
+package com.fyp.mrisecondscreen.utils;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fyp.mrisecondscreen.R;
+import com.fyp.mrisecondscreen.activity.OffersActivity;
+import com.fyp.mrisecondscreen.entity.BannerAd;
+
 public class AdDialog {
+
+
 
     public void showDialog(final Activity activity, BannerAd ad){
         final Dialog dialog = new Dialog(activity);
@@ -17,25 +24,31 @@ public class AdDialog {
         dialog.setContentView(R.layout.banner_layout);
 
         TextView title = (TextView) dialog.findViewById(R.id.banner_title);
-        title.setText(ad.getTitle());
+        title.setText(ad.getOfferTitle());
 
         TextView text = (TextView) dialog.findViewById(R.id.banner_text);
-        text.setText(ad.getAdcontent());
+        text.setText(ad.getOfferContent());
 
         Button redeemButton = (Button) dialog.findViewById(R.id.banner_redeem);
         redeemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
                 Toast.makeText(activity, "Offer/Voucher Redeemed!", Toast.LENGTH_LONG).show();
+                dialog.dismiss();
             }
         });
 
-        Button cancelButton = (Button) dialog.findViewById(R.id.banner_cancel);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
+        Button laterButton = (Button) dialog.findViewById(R.id.banner_cancel);
+        laterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(activity, "Offer/Voucher Saved!", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(dialog.getContext(), OffersActivity.class);
                 dialog.dismiss();
+                dialog.getContext().startActivity(intent);
+
+
+
             }
         });
 

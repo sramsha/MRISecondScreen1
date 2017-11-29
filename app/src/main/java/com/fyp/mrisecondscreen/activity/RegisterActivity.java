@@ -1,4 +1,4 @@
-package com.fyp.mrisecondscreen;
+package com.fyp.mrisecondscreen.activity;
 
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
@@ -13,6 +13,8 @@ import android.widget.Toast;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
+import com.fyp.mrisecondscreen.R;
+import com.fyp.mrisecondscreen.network.RegisterRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;

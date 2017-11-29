@@ -1,4 +1,4 @@
-package com.fyp.mrisecondscreen;
+package com.fyp.mrisecondscreen.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +20,10 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.fyp.mrisecondscreen.network.LoginRequest;
+import com.fyp.mrisecondscreen.R;
+import com.fyp.mrisecondscreen.network.RegisterRequest;
+import com.fyp.mrisecondscreen.utils.SessionManagement;
 
 import org.json.JSONException;
 import org.json.JSONObject;
