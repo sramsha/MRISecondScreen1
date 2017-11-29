@@ -2,7 +2,13 @@ package com.fyp.mrisecondscreen.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.SparseBooleanArray;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -18,32 +24,87 @@ import java.util.concurrent.Executors;
 
 public class OffersActivity extends AppCompatActivity {
 
+    DatabaseHelper databaseHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_offers);
 
-        // Get saved offers from DB
-        // Right now, using Fake data
-
-
-        /*// Make ArrayList of loaded Offers
-        List<String> offersList = new ArrayList<>(Arrays.asList(offersArray));
-
-        // ArrayAdapter to hold data for ListView
-        offerAdapter = new ArrayAdapter<String>(this, R.layout.list_item_offer, R.id.list_item_offer_text, offersList);
-
-        //Bind ListView to Adapter
-        ListView offersListView = (ListView) findViewById(R.id.list_offers);
-        offersListView.setAdapter(offerAdapter);*/
-
-        // Construct the data source
-        ArrayList<BannerAd> arrayOfUsers = new ArrayList<BannerAd>();
+        /// Construct the data source
+        ArrayList<BannerAd> arrayOfOffers = new ArrayList<BannerAd>();
         // Create the adapter to convert the array to views
-        final OffersAdapter adapter = new OffersAdapter(this, arrayOfUsers);
+        final OffersAdapter adapter = new OffersAdapter(this, arrayOfOffers);
         // Attach the adapter to a ListView
-        ListView listView = (ListView) findViewById(R.id.list_offers);
+        final ListView listView = (ListView) findViewById(R.id.list_offers);
         listView.setAdapter(adapter);
+        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        listView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+
+            @Override
+            public void onItemCheckedStateChanged(ActionMode mode, int position,
+                                                  long id, boolean checked) {
+                // Here you can do something when items are selected/de-selected,
+                // such as update the title in the CAB
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                // Respond to clicks on the actions in the CAB
+                switch (item.getItemId()) {
+
+                    case R.id.offer_cancel:
+                        mode.finish(); // Action picked, so close the CAB
+                        return true;
+
+                    case R.id.offer_delete:
+
+                        // Calls getSelectedIds method from ListViewAdapter Class
+                        SparseBooleanArray selected = listView.getCheckedItemPositions();
+                        // Captures all selected ids with a loop
+                        for (int i = (selected.size() - 1); i >= 0; i--) {
+                            if (selected.valueAt(i)) {
+                                BannerAd selecteditem = adapter.getItem(selected.keyAt(i));
+                                // Remove selected items following the ids
+                                int st = databaseHelper.deleteOffer(selecteditem.getOfferId());
+                                Toast.makeText(getApplicationContext(), String.valueOf(selecteditem.getOfferId()), Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "Status + "+String.valueOf(st), Toast.LENGTH_LONG).show();
+                                adapter.remove(selecteditem);
+                                adapter.notifyDataSetChanged();
+                            }
+                        }
+
+                        // Close CAB
+                        mode.finish();
+                        return true;
+
+                    default:
+                        return false;
+                }
+            }
+
+
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                // Inflate the menu for the CAB
+                MenuInflater inflater = mode.getMenuInflater();
+                inflater.inflate(R.menu.offer_action_menu, menu);
+                return true;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+                // Here you can make any necessary updates to the activity when
+                // the CAB is removed. By default, selected items are deselected/unchecked.
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                // Here you can perform updates to the CAB due to
+                // an invalidate() request
+                return false;
+            }
+        });
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 
             @Override
@@ -52,20 +113,15 @@ public class OffersActivity extends AppCompatActivity {
             }
         });
 
-
         //Load Offers from DB
-        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(this);
+        databaseHelper = DatabaseHelper.getInstance(this);
         List<BannerAd> offers = databaseHelper.getAllOffers();
         // Add DB offers to adapter
         adapter.addAll(offers);
 
-        //adapter.addAll(dbOffers);
-        // Or even append an entire new collection
-        // Fetching some data, data has now returned
-        // If data was JSON, convert to ArrayList of User objects.
-        /*JSONArray jsonArray = ...;
-        ArrayList<User> newUsers = User.fromJson(jsonArray)
-        adapter.addAll(newUsers);*/
+
 
     }
+
+
 }

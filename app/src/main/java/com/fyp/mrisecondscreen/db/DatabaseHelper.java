@@ -22,7 +22,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Database Info
     private static final String DATABASE_NAME = "ssDatabase";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     // Table Names
     private static final String TABLE_OFFERS = "offers";
@@ -215,6 +215,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return offers;
     }
+
+    // Delete all posts and users in the database
+    public int deleteOffer(int id) {
+        int st=0;
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        try {
+            // Order of deletions is important when foreign key relationships exist.
+            st=db.delete(TABLE_OFFERS, COLUMN_OFFER_ID+" = ?", new String[]{String.valueOf(id)});
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.d(TAG, "Error while trying to delete offer with id : " + id);
+        } finally {
+            db.endTransaction();
+        }
+        return st;
+    }
+
 
     /*
     // Update the user's profile picture url
