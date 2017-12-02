@@ -1,5 +1,6 @@
 package com.fyp.mrisecondscreen.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.SparseBooleanArray;
@@ -46,6 +47,7 @@ public class OffersActivity extends AppCompatActivity {
                                                   long id, boolean checked) {
                 // Here you can do something when items are selected/de-selected,
                 // such as update the title in the CAB
+
             }
 
             @Override
@@ -109,7 +111,16 @@ public class OffersActivity extends AppCompatActivity {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplicationContext(), adapter.getItem(position).getOfferContent(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), adapter.getItem(position).getOfferContent(), Toast.LENGTH_LONG).show();
+                BannerAd ad = adapter.getItem(position);
+                Intent i = new Intent(OffersActivity.this, OfferDetail.class);
+                // Pass all data
+                i.putExtra("OfferId", ad.getOfferId());
+                i.putExtra("OfferTitle", ad.getOfferTitle());
+                i.putExtra("OfferBrand", ad.getOfferBrand());
+                i.putExtra("OfferContent", ad.getOfferContent());
+                i.putExtra("OfferImage", ad.getOfferImage());
+                startActivity(i);
             }
         });
 

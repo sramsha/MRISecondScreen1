@@ -154,7 +154,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 Cursor cursor = db.rawQuery(usersSelectQuery, new String[]{String.valueOf(offer.getOfferId())});
                 try {
                     if (cursor.moveToFirst()) {
-                        Log.e(TAG, "!!!!!Offer already in DB with ID of " + cursor.getString(cursor.getColumnIndex(COLUMN_OFFER_TITLE)));
+                        Log.e("DB OFFER ALREADY", "!!!!!Offer already in DB with ID of " + cursor.getInt(cursor.getColumnIndex(COLUMN_OFFER_ID)));
 
                     }
                     else {

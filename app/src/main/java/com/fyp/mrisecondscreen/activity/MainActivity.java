@@ -27,10 +27,8 @@ import com.fyp.mrisecondscreen.utils.AdDialog;
 import com.fyp.mrisecondscreen.utils.AudioRecorder;
 import com.fyp.mrisecondscreen.entity.BannerAd;
 import com.fyp.mrisecondscreen.R;
+import com.fyp.mrisecondscreen.utils.ImageUtil;
 import com.fyp.mrisecondscreen.utils.SessionManagement;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -45,7 +43,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.concurrent.Executors;
 
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -53,7 +50,8 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String SERVER_URL = "http://192.168.8.100:5000/match";
+    private static final String SERVER_MATCH_URL = "http://192.168.8.101:5000/match";
+    private static final String SERVER_MEDIA_URL = "http://192.168.8.101:5000/uploads/images/";
 
     public static final int RequestPermissionCode = 1;
 
@@ -136,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                                 // send recorded clip to server via AsyncTask
-                                new GetAdContent(SERVER_URL, recorder.getPath(), MainActivity.this).execute("WubbaLubbaDubDub");
+                                new GetAdContent(SERVER_MATCH_URL, recorder.getPath(), MainActivity.this).execute("WubbaLubbaDubDub");
 
 
                             } catch (IOException e) {
@@ -328,7 +326,7 @@ public class MainActivity extends AppCompatActivity {
             {
                 Log.e("/match/ Response", result);
                 // Do something awesome here
-                Toast.makeText(ctx, result, Toast.LENGTH_LONG).show();
+                //Toast.makeText(ctx, result, Toast.LENGTH_LONG).show();
 
                 //Parse json response into BannerAd
                 final BannerAd runningAd = new BannerAd(result);
@@ -338,6 +336,14 @@ public class MainActivity extends AppCompatActivity {
                 long status = databaseHelper.addWithOnConflict(runningAd);
                 if(-1 != status) {
                     Toast.makeText(ctx, "Offer saved successfully with ID of : " + status, Toast.LENGTH_SHORT).show();
+                    //Get offer image from server and save locally
+                    String image = runningAd.getOfferImage();
+                    String url = SERVER_MEDIA_URL+image;
+                    String imgExtension = ImageUtil.getImageExtension(image);
+                    String imageName = runningAd.getOfferBrand()+String.valueOf(runningAd.getOfferId());
+                    ImageUtil.downloadImage(getApplicationContext(), url, imageName, imgExtension);
+
+                    Toast.makeText(ctx, "Image saved with name : " + imageName, Toast.LENGTH_SHORT).show();
                 }
                 else {
                     Toast.makeText(ctx, "Ad viewed already", Toast.LENGTH_SHORT).show();
@@ -355,7 +361,7 @@ public class MainActivity extends AppCompatActivity {
                 //Toast.makeText(ctx,"Offer saved successfully",Toast.LENGTH_SHORT).show();
 
                 // Finally delete the sample clip
-                //recorder.deleteClip();
+                recorder.deleteClip();
 
             }
             else
