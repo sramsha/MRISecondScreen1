@@ -30,6 +30,8 @@ dependencies {
     
     testCompile 'junit:junit:4.12'
 
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
     /* for Room API
     compile 'android.arch.persistence.room:runtime:' + rootProject.archRoomVersion;
     annotationProcessor 'android.arch.persistence.room:compiler:' + rootProject.archRoomVersion;
