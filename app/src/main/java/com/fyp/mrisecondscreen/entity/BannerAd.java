@@ -15,8 +15,20 @@ public class BannerAd {
     private String offerLink;
     private String offerImage;
 
-    public BannerAd(String response) {
-        JSONParse(response);
+    public BannerAd(JSONObject response) {
+        try {
+
+            offerId = response.getInt("offerid");
+            songId = response.getInt("song_id");
+            offerTitle = response.getString("offertitle");
+            offerBrand = response.getString("brand");
+            offerContent = response.getString("offercontent");
+            offerImage = response.getString("offerimage");
+            offerLink = response.getString("offerlink");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public BannerAd(int offerId, int songId, String offerTitle, String offerBrand, String offerContent, String offerLink, String offerImage) {
@@ -32,23 +44,7 @@ public class BannerAd {
     public BannerAd() {
     }
 
-    void JSONParse(String res) {
-        try {
-            Log.i("JSON RESPONSE : ", res);
-            JSONObject jsonObject = new JSONObject(res);
-            offerId = jsonObject.getInt("offerid");
-            songId = jsonObject.getInt("song_id");
-            offerTitle = jsonObject.getString("offertitle");
-            offerBrand = jsonObject.getString("brand");
-            offerContent = jsonObject.getString("offercontent");
-            offerImage = jsonObject.getString("offerimage");
-            offerLink = jsonObject.getString("offerlink");
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-    }
 
     public int getOfferId() {
         return offerId;

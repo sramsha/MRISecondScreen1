@@ -3,6 +3,7 @@ package com.fyp.mrisecondscreen.activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -35,7 +36,7 @@ public class OffersActivity extends AppCompatActivity {
         /// Construct the data source
         ArrayList<BannerAd> arrayOfOffers = new ArrayList<BannerAd>();
         // Create the adapter to convert the array to views
-        final OffersAdapter adapter = new OffersAdapter(this, arrayOfOffers);
+        final OffersAdapter adapter = new OffersAdapter(OffersActivity.this, arrayOfOffers);
         // Attach the adapter to a ListView
         final ListView listView = (ListView) findViewById(R.id.list_offers);
         listView.setAdapter(adapter);
@@ -127,6 +128,7 @@ public class OffersActivity extends AppCompatActivity {
         //Load Offers from DB
         databaseHelper = DatabaseHelper.getInstance(this);
         List<BannerAd> offers = databaseHelper.getAllOffers();
+        Log.e("OFFERACTIVITY !!",offers.get(0).getOfferImage());
         // Add DB offers to adapter
         adapter.addAll(offers);
 

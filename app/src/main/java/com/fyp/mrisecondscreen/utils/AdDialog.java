@@ -44,9 +44,8 @@ public class AdDialog {
             public void onClick(View v) {
                 Toast.makeText(activity, "Offer/Voucher Saved!", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(dialog.getContext(), OffersActivity.class);
-                dialog.dismiss();
                 dialog.getContext().startActivity(intent);
-
+                dialog.dismiss();
 
 
             }
