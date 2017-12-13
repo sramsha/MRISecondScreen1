@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -185,8 +186,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(String response) {
                 try {
                     JSONObject jsonResponse = new JSONObject(response);
-                    boolean success = jsonResponse.getBoolean("success");
-                    if (success){
+                    String success = jsonResponse.getString("success");
+                    Log.e("Response", "Success = "+success);
+                    if (success.equals("true")){
                         String name = jsonResponse.getString("name");
                         int age = jsonResponse.getInt("age");
                         String email = jsonResponse.getString("email");
@@ -218,9 +220,12 @@ public class LoginActivity extends AppCompatActivity {
             }
         };
 
+
+
         LoginRequest loginRequest = new LoginRequest(username, password, responseListener);
         RequestQueue queue = Volley.newRequestQueue(LoginActivity.this);
         queue.add(loginRequest);
+        Log.e("ResponseLogin", "Sending request with = "+username+" "+password);
     }
 
     public void getUserInfo(JSONObject object) {

@@ -1,6 +1,7 @@
 package com.fyp.mrisecondscreen.activity;
 
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,6 +17,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -29,6 +32,9 @@ import com.fyp.mrisecondscreen.entity.BannerAd;
 import com.fyp.mrisecondscreen.R;
 import com.fyp.mrisecondscreen.utils.ImageUtil;
 import com.fyp.mrisecondscreen.utils.SessionManagement;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -50,8 +56,8 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String SERVER_MATCH_URL = "http://192.168.8.101:5000/match";
-    private static final String SERVER_MEDIA_URL = "http://192.168.8.101:5000/uploads/images/";
+    private static final String SERVER_MATCH_URL = "http://192.168.8.100:5000/match/";
+    private static final String SERVER_MEDIA_URL = "http://192.168.8.100:5000/uploads/images/";
 
     public static final int RequestPermissionCode = 1;
 
@@ -61,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static AudioRecorder recorder;
 
-    BannerAd runningAd;
+
     SessionManagement session;
 
     @Override
@@ -328,40 +334,88 @@ public class MainActivity extends AppCompatActivity {
                 // Do something awesome here
                 //Toast.makeText(ctx, result, Toast.LENGTH_LONG).show();
 
-                //Parse json response into BannerAd
-                final BannerAd runningAd = new BannerAd(result);
+                final JSONObject jsonObject;
+                try {
+                    jsonObject = new JSONObject(result);
+                    if(jsonObject.get("found").equals("true")) {
+                        //Parse json response into BannerAd
+                        final BannerAd runningAd = new BannerAd(jsonObject);
 
-                //save offer
-                DatabaseHelper databaseHelper = DatabaseHelper.getInstance(this.ctx);
-                long status = databaseHelper.addWithOnConflict(runningAd);
-                if(-1 != status) {
-                    Toast.makeText(ctx, "Offer saved successfully with ID of : " + status, Toast.LENGTH_SHORT).show();
-                    //Get offer image from server and save locally
-                    String image = runningAd.getOfferImage();
-                    String url = SERVER_MEDIA_URL+image;
-                    String imgExtension = ImageUtil.getImageExtension(image);
-                    String imageName = runningAd.getOfferBrand()+String.valueOf(runningAd.getOfferId());
-                    ImageUtil.downloadImage(getApplicationContext(), url, imageName, imgExtension);
+                        //save offer
+                        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(this.ctx);
+                        long status = databaseHelper.addWithOnConflict(runningAd);
+                        if (-1 != status) {
+                            Toast.makeText(ctx, "Offer saved successfully with ID of : " + status, Toast.LENGTH_SHORT).show();
+                            //Get offer image from server and save locally
+                            String image = runningAd.getOfferImage();
+                            String url = SERVER_MEDIA_URL + image;
+                            String imgExtension = ImageUtil.getImageExtension(image);
+                            String imageName = runningAd.getOfferBrand() + String.valueOf(runningAd.getOfferId());
+                            ImageUtil.downloadImage(getApplicationContext(), url, imageName, imgExtension);
 
-                    Toast.makeText(ctx, "Image saved with name : " + imageName, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ctx, "Image saved with name : " + imageName, Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(ctx, "Ad viewed already", Toast.LENGTH_SHORT).show();
+                            // TODO: Handle further logic
+                        }
+
+                        // Make a AdDialog
+                        //AdDialog adDialog = new AdDialog();
+
+                        // Populate the AdDialog with BannerAd
+                        //adDialog.showDialog(MainActivity.this, runningAd);
+
+                        final Dialog dialog = new Dialog(MainActivity.this);
+                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                        dialog.setCancelable(false);
+                        dialog.setContentView(R.layout.banner_layout);
+
+                        TextView title = (TextView) dialog.findViewById(R.id.banner_title);
+                        title.setText(runningAd.getOfferTitle());
+
+                        TextView text = (TextView) dialog.findViewById(R.id.banner_text);
+                        text.setText(runningAd.getOfferContent());
+
+                        dialog.show();
+
+                        Button redeemButton = (Button) dialog.findViewById(R.id.banner_redeem);
+                        redeemButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(MainActivity.this, "Offer/Voucher Redeemed!", Toast.LENGTH_LONG).show();
+                                dialog.dismiss();
+                            }
+                        });
+
+                        Button laterButton = (Button) dialog.findViewById(R.id.banner_cancel);
+                        laterButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(MainActivity.this, "Offer/Voucher Saved!", Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(MainActivity.this, OffersActivity.class);
+                                startActivity(intent);
+                                dialog.dismiss();
+                                finish();
+
+                            }
+                        });
+                    }
+                    else {
+                        Toast.makeText(ctx,"Fingerprint not in DB or too much noise",Toast.LENGTH_SHORT).show();
+                    }
+
+                    //Toast.makeText(ctx,"Offer saved successfully",Toast.LENGTH_SHORT).show();
+
+                    // Finally delete the sample clip
+                    recorder.deleteClip();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                else {
-                    Toast.makeText(ctx, "Ad viewed already", Toast.LENGTH_SHORT).show();
-                    // TODO: Handle further logic
-                }
-
-                // Make a AdDialog
-                AdDialog adDialog = new AdDialog();
-
-                // Populate the AdDialog with BannerAd
-                adDialog.showDialog(MainActivity.this, runningAd);
 
 
 
-                //Toast.makeText(ctx,"Offer saved successfully",Toast.LENGTH_SHORT).show();
 
-                // Finally delete the sample clip
-                recorder.deleteClip();
 
             }
             else

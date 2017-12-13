@@ -35,7 +35,8 @@ public class OffersAdapter extends ArrayAdapter<BannerAd>{
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for current position
         BannerAd offer = getItem(position);
-
+        Log.e("Lalala", "!!!!! Image name getofferimage EEE "+getItem(position).getOfferId()+"!!!!!");
+        Log.e("Lalala", "!!!!! Image name getofferimage EEE "+offer.getOfferId()+"!!!!!");
         // Fetch offer image form AppLocalData
         // TODO : move this method to ImageUtil
         ContextWrapper cw = new ContextWrapper(getApplicationContext());

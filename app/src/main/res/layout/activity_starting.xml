@@ -4,6 +4,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@android:style/Theme.NoDisplay"
-    tools:context="com.fyp.mrisecondscreen.activity.StartingActivity">
+    tools:context="com.fyp.mrisecondscreen.activity.StartingActivity"
+    android:background="#e4e2e2">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ImageView
+            android:src="@drawable/logo"
+            android:layout_gravity="center"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:id="@+id/logo"
+            android:contentDescription="Logo"/>
+    </LinearLayout>
 
 </RelativeLayout>
