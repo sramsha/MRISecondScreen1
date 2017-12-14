@@ -17,13 +17,13 @@ public class SessionManagement {
     Context _context;
 
     // Shared pref mode
-    int PRIVATE_MODE = 0;
+    public int PRIVATE_MODE = 0;
 
     // Sharedpref file name
-    private static final String PREF_NAME = "AdSync";
+    public static final String PREF_NAME = "AdSync";
 
     // All Shared Preferences Keys
-    private static final String IS_LOGIN = "IsLoggedIn";
+    public static final String IS_LOGIN = "IsLoggedIn";
 
     // Name (make variable public to access from outside)
     public static final String KEY_NAME = "name";

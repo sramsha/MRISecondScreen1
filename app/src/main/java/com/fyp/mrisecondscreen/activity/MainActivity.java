@@ -1,6 +1,5 @@
 package com.fyp.mrisecondscreen.activity;
 
-
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -8,13 +7,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.CountDownTimer;
-
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -25,13 +28,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
-import com.fyp.mrisecondscreen.db.DatabaseHelper;
-import com.fyp.mrisecondscreen.utils.AdDialog;
-import com.fyp.mrisecondscreen.utils.AudioRecorder;
-import com.fyp.mrisecondscreen.entity.BannerAd;
 import com.fyp.mrisecondscreen.R;
+import com.fyp.mrisecondscreen.db.DatabaseHelper;
+import com.fyp.mrisecondscreen.entity.BannerAd;
+import com.fyp.mrisecondscreen.utils.AudioRecorder;
 import com.fyp.mrisecondscreen.utils.ImageUtil;
-import com.fyp.mrisecondscreen.utils.SessionManagement;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,62 +49,54 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
 
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends NavDrawerActivity {
 
     private static final String SERVER_MATCH_URL = "http://192.168.8.100:5000/match/";
     private static final String SERVER_MEDIA_URL = "http://192.168.8.100:5000/uploads/images/";
 
     public static final int RequestPermissionCode = 1;
-
-    private static ImageView mic;
     private static TextView recordText;
     private static ProgressBar progressBar;
+    private static ImageView mic;
 
     private static AudioRecorder recorder;
 
-
-    SessionManagement session;
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        super.setContentView(R.layout.activity_main);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        navigationView.setCheckedItem(R.id.nav_main);
 
         //get instance views
         mic = (ImageView) findViewById(R.id.mic);
         recordText = (TextView) findViewById(R.id.recordText);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        TextView main_nameTextView = (TextView) findViewById(R.id.main_name);
-        TextView main_emailTextView = (TextView) findViewById(R.id.main_email);
-        session = new SessionManagement(getApplicationContext());
-        String name;
-        String email;
 
-        if (session.isLoggedIn())
-        {
-            // get user data from session
-            HashMap<String, String> user = session.getUserDetails();
-            // name
-            name = user.get(SessionManagement.KEY_NAME);
-            // email
-            email = user.get(SessionManagement.KEY_EMAIL);
-        }
-        else
-        {
-            Intent intent = getIntent();
-            name = intent.getStringExtra("name");
-            email = intent.getStringExtra("email");
-        }
 
-        main_nameTextView.setText("Name: " + name);
-        main_emailTextView.setText("Email: " + email);
 
         //tap on mic
         mic.setOnClickListener(new View.OnClickListener() {
@@ -163,7 +156,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
     // AsyncTask to get AdContent form server
@@ -461,10 +453,6 @@ public class MainActivity extends AppCompatActivity {
                 result1 == PackageManager.PERMISSION_GRANTED;
     }
 
-    @Override
-    public void onBackPressed() {
-        doExit();
-    }
 
     private void doExit() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(
@@ -475,7 +463,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // Session deletion
-                session.logoutUser();
+                //session.logoutUser();
                 // Facebook logout
                 LoginManager.getInstance().logOut();
                 System.exit(0);
@@ -489,4 +477,3 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.show();
     }
 }
-

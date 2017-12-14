@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_main"
+            android:icon="@drawable/ic_home_black_18px"
+            android:title="Sync Now"
+            android:checked="true"/>
+        <item
+            android:id="@+id/nav_syncedads"
+            android:icon="@drawable/ic_grade_black_18px"
+            android:title="Ads Viewed" />
+        <item
+            android:id="@+id/nav_coupons"
+            android:icon="@drawable/ic_check_circle_black_18px"
+            android:title="Coupons Redeemed" />
+        <item
+            android:id="@+id/nav_manage"
+            android:icon="@drawable/ic_account_circle_black_18px"
+            android:title="Profile" />
+    </group>
+
+    <item android:title="Others">
+        <menu>
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_exit_to_app_black_24px"
+                android:title="Logout" />
+        </menu>
+    </item>
+
+</menu>

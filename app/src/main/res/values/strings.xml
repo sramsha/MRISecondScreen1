@@ -1,5 +1,11 @@
 <resources>
-    <string name="app_name">MRISecondScreen</string>
+    <string name="app_name">Touch Point</string>
     <string name="facebook_app_id">360259361089404</string>
     <string name="fb_login_protocol_scheme">fb360259361089404</string>
+    <string name="title_activity_main2">Touch Point</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
 </resources>
