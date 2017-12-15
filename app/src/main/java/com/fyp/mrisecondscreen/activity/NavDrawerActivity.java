@@ -2,15 +2,14 @@ package com.fyp.mrisecondscreen.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,12 +25,11 @@ public class NavDrawerActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        super.setContentView(R.layout.activity_navigation_drawer);
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -85,29 +83,21 @@ public class NavDrawerActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        View addedView = null;
-
-        RelativeLayout container = (RelativeLayout) findViewById(R.id.content_frame);
-        LayoutInflater inflater = getLayoutInflater();
-
-        RelativeLayout rl = findViewById(R.id.mic_relative_layout);
-
-        container.removeView(previousView);
+        Intent intent;
 
         if (id == R.id.nav_main) {
             Toast.makeText(getApplicationContext(), " Sync Now", Toast.LENGTH_LONG).show();
-            addedView = inflater.inflate(R.layout.activity_mic, null);
-            container.addView(addedView);
+            intent = new Intent(NavDrawerActivity.this, MainActivity.class);
+            NavDrawerActivity.this.startActivity(intent);
         }
 
         else if (id == R.id.nav_syncedads) {
             Toast.makeText(getApplicationContext(), " Ads Viewed", Toast.LENGTH_LONG).show();
-            addedView = inflater.inflate(R.layout.activity_ads_viewed2, null);
-            container.addView(addedView);
-            rl.setVisibility(View.INVISIBLE);
+            intent = new Intent(NavDrawerActivity.this, AdsViewed.class);
+            NavDrawerActivity.this.startActivity(intent);
         }
 
         else if (id == R.id.nav_coupons) {
@@ -122,14 +112,13 @@ public class NavDrawerActivity extends AppCompatActivity
             Toast.makeText(getApplicationContext(), "Logging out", Toast.LENGTH_SHORT).show();
             user.logout();
             Toast.makeText(getApplicationContext(), "Redirect to login Activity", Toast.LENGTH_LONG).show();
-            Intent logout = new Intent(NavDrawerActivity.this, LoginActivity.class);
-            NavDrawerActivity.this.startActivity(logout);
+            intent = new Intent(NavDrawerActivity.this, LoginActivity.class);
+            NavDrawerActivity.this.startActivity(intent);
         }
-
-        previousView = addedView;
-
+        /* This code is removed because the application lags when activity is switched along with Navdrawer closing
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+        No need to animate the closing of Navdrawer when the activity is switched */
         return true;
     }
 }

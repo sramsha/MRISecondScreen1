@@ -8,13 +8,7 @@ android:layout_height="match_parent"
 android:fitsSystemWindows="true"
 tools:openDrawer="start">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:id="@+id/content_frame">
-
+    <!-- Our activity xml here -->
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
@@ -22,9 +16,7 @@ tools:openDrawer="start">
             android:paddingBottom="@dimen/activity_vertical_margin"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
-            android:paddingTop="@dimen/activity_vertical_margin"
-            android:id="@+id/mic_relative_layout"
-            tools:context=".activity.MicActivity">
+            android:paddingTop="@dimen/activity_vertical_margin">
 
             <ImageButton
                 android:layout_height="200dp"
@@ -58,9 +50,7 @@ tools:openDrawer="start">
                 />
 
         </RelativeLayout>
-
-    </RelativeLayout>
-
+    <!-- Our activity xml here -->
 
 <include
     layout="@layout/app_bar_main"

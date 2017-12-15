@@ -12,4 +12,10 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <!-- ToolBar -->
+    <style name="ToolBarStyle" parent="Theme.AppCompat">
+        <item name="android:textColorPrimary">#2582C5</item>
+        <item name="android:textColorSecondary">#2582C5</item>
+    </style>
+
 </resources>
