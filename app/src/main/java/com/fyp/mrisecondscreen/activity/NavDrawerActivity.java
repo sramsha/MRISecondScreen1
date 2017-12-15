@@ -1,6 +1,5 @@
 package com.fyp.mrisecondscreen.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -11,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,10 +53,10 @@ public class NavDrawerActivity extends AppCompatActivity
         email = user.getEmail();
 
         if (name == null)
-            name = "Username couldnt be loaded";
+            name = "Username";
 
         if (email == null)
-            email = "Email couldnt be loaded";
+            email = "UserEmail@android.com";
 
         TextView username = findViewById(R.id.nav_username);
         TextView useremail = findViewById(R.id.nav_useremail);
@@ -81,22 +81,33 @@ public class NavDrawerActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    View previousView;
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        View addedView = null;
+
+        RelativeLayout container = (RelativeLayout) findViewById(R.id.content_frame);
+        LayoutInflater inflater = getLayoutInflater();
+
+        RelativeLayout rl = findViewById(R.id.mic_relative_layout);
+
+        container.removeView(previousView);
 
         if (id == R.id.nav_main) {
             Toast.makeText(getApplicationContext(), " Sync Now", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            addedView = inflater.inflate(R.layout.activity_mic, null);
+            container.addView(addedView);
         }
 
         else if (id == R.id.nav_syncedads) {
             Toast.makeText(getApplicationContext(), " Ads Viewed", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(this, AdsViewed.class);
-            startActivity(intent);
+            addedView = inflater.inflate(R.layout.activity_ads_viewed2, null);
+            container.addView(addedView);
+            rl.setVisibility(View.INVISIBLE);
         }
 
         else if (id == R.id.nav_coupons) {
@@ -111,18 +122,14 @@ public class NavDrawerActivity extends AppCompatActivity
             Toast.makeText(getApplicationContext(), "Logging out", Toast.LENGTH_SHORT).show();
             user.logout();
             Toast.makeText(getApplicationContext(), "Redirect to login Activity", Toast.LENGTH_LONG).show();
+            Intent logout = new Intent(NavDrawerActivity.this, LoginActivity.class);
+            NavDrawerActivity.this.startActivity(logout);
         }
+
+        previousView = addedView;
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-    public void addContentView(int layoutId) {
-        LayoutInflater inflater = (LayoutInflater) this
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View contentView = inflater.inflate(layoutId, null, false);
-        mDrawerLayout.addView(contentView, 0);
-    }
-
 }
