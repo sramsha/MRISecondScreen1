@@ -18,37 +18,33 @@ public class StartingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_starting);
-        logo = (ImageView) findViewById(R.id.logo);
-        Animation myanimation = AnimationUtils.loadAnimation(this, R.anim.logotransition);
-        logo.startAnimation(myanimation);
-
         final SessionManagement session = new SessionManagement(getApplicationContext());
+        // if user is already logged in, no need to show him the splash screen
+        if (session.isLoggedIn()) {
+            Intent myIntent = new Intent(StartingActivity.this, MainActivity.class);
+            StartingActivity.this.startActivity(myIntent);
+        } else {
+            logo = findViewById(R.id.logo);
+            Animation myanimation = AnimationUtils.loadAnimation(this, R.anim.logotransition);
+            logo.startAnimation(myanimation);
 
-        Thread timer = new Thread(){
-            public void run(){
-                try {
-                    sleep(3000);
-                } catch (InterruptedException e) {
-
-                }
-                finally{
-                    if (session.isLoggedIn())
-                    {
-                        Intent myIntent = new Intent(StartingActivity.this, MainActivity.class);
-                        StartingActivity.this.startActivity(myIntent);
-                    }
-                    else
-                    {
+            Thread timer = new Thread() {
+                public void run() {
+                    try {
+                        sleep(3000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } finally {
                         Intent myIntent = new Intent(StartingActivity.this, LoginActivity.class);
                         StartingActivity.this.startActivity(myIntent);
+
+                        // close this activity
+                        finish();
                     }
-
-                    // close this activity
-                    finish();
                 }
-            }
-        };
+            };
 
-        timer.start();
+            timer.start();
+        }
     }
 }

@@ -2,40 +2,36 @@ package com.fyp.mrisecondscreen.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import java.util.HashMap;
 
 public class SessionManagement {
 
+    // Sharedpref file name
+    public static final String PREF_NAME = "AdSync";
+    // All Shared Preferences Keys
+    public static final boolean IS_LOGIN = false;
+    // Name (make variable public to access from outside)
+    public static final String KEY_NAME = "KEY_NAME";
+    public static final String KEY_USERNAME = "KEY_USERNAME";
+    public static final String KEY_EMAIL = "KEY_EMAIL";
+    public static final String KEY_PASSWORD = "KEY_PASSWORD";
+    public static final String KEY_GENDER = "KEY_GENDER";
+    public static final String KEY_RELATIONSHIP_STATUS = "KEY_RELATIONSHIP_STATUS";
+    public static final String KEY_BIRTHDAY = "KEY_BIRTHDAY";
+    public static final String KEY_MAC = "KEY_MAC";
+    public static final String KEY_LOCATION = "KEY_LOCATION";
+    public static final String KEY_MOBILE_NUMBER = "KEY_MOBILE_NUMBER";
+    // Shared pref mode
+    public int PRIVATE_MODE = 0;
     // Shared Preferences
     SharedPreferences pref;
-
     // Editor for Shared preferences
     SharedPreferences.Editor editor;
-
     // Context
     Context _context;
 
-    // Shared pref mode
-    public int PRIVATE_MODE = 0;
-
-    // Sharedpref file name
-    public static final String PREF_NAME = "AdSync";
-
-    // All Shared Preferences Keys
-    public static final String IS_LOGIN = "IsLoggedIn";
-
-    // Name (make variable public to access from outside)
-    public static final String KEY_NAME = "name";
-
-    // User name (make variable public to access from outside)
-    public static final String KEY_USERNAME = "username";
-
-    // Email address (make variable public to access from outside)
-    public static final String KEY_EMAIL = "email";
-
-    // Age (make variable public to access from outside)
-    //public static final Integer KEY_AGE = 0;
 
     // Constructor
     public SessionManagement(Context context) {
@@ -44,94 +40,53 @@ public class SessionManagement {
         editor = pref.edit();
     }
 
-    public void createLoginSession(String name, String username, String email){
+    public void createLoginSession(String name, String email, String username, String password, String gender, String relationship_status, String birthday, String location, String MAC, String mobile_number) {
         // Storing login value as TRUE
-        editor.putBoolean(IS_LOGIN, true);
-
-        // Storing name in pref
+        editor.putBoolean(String.valueOf(IS_LOGIN), true);
+        Log.e("SM[NAME]", name);
+        Log.e("SM[EMAIL]", email);
         editor.putString(KEY_NAME, name);
-
-        // Storing username in pref
-        editor.putString(KEY_USERNAME, username);
-
-        // Storing email in pref
         editor.putString(KEY_EMAIL, email);
-
-        // Storing age in pref
-        //editor.putInt(String.valueOf(KEY_AGE), age);
+        editor.putString(KEY_USERNAME, username);
+        editor.putString(KEY_PASSWORD, password);
+        editor.putString(KEY_GENDER, gender);
+        editor.putString(KEY_RELATIONSHIP_STATUS, relationship_status);
+        editor.putString(KEY_BIRTHDAY, birthday);
+        editor.putString(KEY_MAC, MAC);
+        editor.putString(KEY_LOCATION, location);
+        editor.putString(KEY_MOBILE_NUMBER, mobile_number);
 
         // commit changes
         editor.commit();
     }
 
     public HashMap<String, String> getUserDetails(){
-        HashMap<String, String> user = new HashMap<String, String>();
-        // name
+        HashMap<String, String> user = new HashMap<>();
+
         user.put(KEY_NAME, pref.getString(KEY_NAME, null));
-
-        // user name
         user.put(KEY_USERNAME, pref.getString(KEY_USERNAME, null));
-
-        // user email id
         user.put(KEY_EMAIL, pref.getString(KEY_EMAIL, null));
-
-        // user age
-        //user.put(KEY_AGE, pref.getInt(KEY_AGE, null));
+        user.put(KEY_PASSWORD, pref.getString(KEY_PASSWORD, null));
+        user.put(KEY_GENDER, pref.getString(KEY_GENDER, null));
+        user.put(KEY_RELATIONSHIP_STATUS, pref.getString(KEY_RELATIONSHIP_STATUS, null));
+        user.put(KEY_BIRTHDAY, pref.getString(KEY_BIRTHDAY, null));
+        user.put(KEY_MAC, pref.getString(KEY_MAC, null));
+        user.put(KEY_LOCATION, pref.getString(KEY_LOCATION, null));
+        user.put(KEY_MOBILE_NUMBER, pref.getString(KEY_MOBILE_NUMBER, null));
 
         // return user
         return user;
-    }
-
-    public void checkLogin(){
-        // Check login status
-        /*if(!this.isLoggedIn()){
-            // user is not logged in redirect him to Login Activity
-            Intent i = new Intent(_context, LoginActivity.class);
-            // Closing all the Activities
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-            // Add new Flag to start new Activity
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            // Staring Login Activity
-            _context.startActivity(i);
-        }
-        else
-        {
-            // user is logged in redirect him to Main Activity
-            Intent i = new Intent(_context, MainActivity.class);
-            // Closing all the Activities
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-            // Add new Flag to start new Activity
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            // Starting Main Activity
-            _context.startActivity(i);
-        }*/
-
     }
 
     public void logoutUser(){
         // Clearing all data from Shared Preferences
         editor.clear();
         editor.commit();
-
-        /*// After logout redirect user to Loing Activity
-        Intent i = new Intent(_context, LoginActivity.class);
-        // Closing all the Activities
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        // Add new Flag to start new Activity
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        // Staring Login Activity
-        _context.startActivity(i);*/
     }
 
     // Get Login State
     public boolean isLoggedIn(){
-        return pref.getBoolean(IS_LOGIN, false);
+        return pref.getBoolean(String.valueOf(IS_LOGIN), false);
     }
 
 

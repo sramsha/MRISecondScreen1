@@ -2,25 +2,30 @@ package com.fyp.mrisecondscreen.network;
 
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
+import com.fyp.mrisecondscreen.utils.User;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class RegisterRequest extends StringRequest {
 
-    private static final String REGISTER_REQUEST_URL = "http://192.168.8.100:5000/user/create";
+    private static final String REGISTER_REQUEST_URL = "http://192.168.1.103:9999/registerCustom.php";
     private Map<String, String> params;
 
-    public RegisterRequest(String name, String username, int age, String email, String password, String gender, String mac, Response.Listener<String> listener){
+    public RegisterRequest(User user, Response.Listener<String> listener) {
         super(Method.POST, REGISTER_REQUEST_URL, listener, null);
         params = new HashMap<>();
-        params.put("name", name);
-        params.put("username", username);
-        params.put("age", age + "");
-        params.put("email", email);
-        params.put("password", password);
-        params.put("gender", gender);
-        params.put("mac", mac);
+        params.put("name", user.getName() + "");
+        params.put("email", user.getEmail() + "");
+        params.put("ID", user.getID() + "");
+        params.put("password", user.getPassword() + "");
+        params.put("gender", user.getGender() + "");
+        params.put("relationshipStatus", user.getRelationshipStatus() + "");
+        params.put("birthday", user.getBirthday() + "");
+        params.put("location", user.getLocation() + "");
+        params.put("MAC", user.getMAC() + "");
+        params.put("mobileNumber", user.getMobileNumber() + "");
+        params.put("isProfileComplete", user.isProfileComplete() + "");
         //params.put("imei", imei);
     }
 

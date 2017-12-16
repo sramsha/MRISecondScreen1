@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -53,17 +54,19 @@ import java.util.Objects;
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
+@SuppressWarnings("ALL")
 public class MainActivity extends NavDrawerActivity {
 
+    public static final int RequestPermissionCode = 1;
     private static final String SERVER_MATCH_URL = "http://192.168.8.100:5000/match/";
     private static final String SERVER_MEDIA_URL = "http://192.168.8.100:5000/uploads/images/";
-
-    public static final int RequestPermissionCode = 1;
     private static TextView recordText;
     private static ProgressBar progressBar;
     private static ImageView mic;
 
     private static AudioRecorder recorder;
+
+    SharedPreferences sharedpreferences;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -174,14 +177,54 @@ public class MainActivity extends NavDrawerActivity {
         alertDialog.setNegativeButton("No", null);
 
         alertDialog.setMessage("Do you want to exit the application?");
-        alertDialog.setTitle("AdSync");
+        alertDialog.setTitle("Touch Point");
         alertDialog.show();
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(MainActivity.this, new
+                String[]{WRITE_EXTERNAL_STORAGE, RECORD_AUDIO}, RequestPermissionCode);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case RequestPermissionCode:
+                if (grantResults.length > 0) {
+                    boolean StoragePermission = grantResults[0] ==
+                            PackageManager.PERMISSION_GRANTED;
+                    boolean RecordPermission = grantResults[1] ==
+                            PackageManager.PERMISSION_GRANTED;
+
+                    if (StoragePermission && RecordPermission) {
+                        Toast.makeText(MainActivity.this, "Permission Granted",
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, "Permission Denied", Toast.LENGTH_LONG).show();
+                    }
+                }
+                break;
+        }
+    }
+
+    public boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(getApplicationContext(),
+                WRITE_EXTERNAL_STORAGE);
+        int result1 = ContextCompat.checkSelfPermission(getApplicationContext(),
+                RECORD_AUDIO);
+        return result == PackageManager.PERMISSION_GRANTED &&
+                result1 == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public void onBackPressed() {
+        doExit();
     }
 
     // AsyncTask to get AdContent form server
     private class GetAdContent extends AsyncTask<String, Void, String> {
         private Context ctx;
-        private String TAG="GETADCONTENT";
+        private String TAG = "GETADCONTENT";
         private String url;
         private ProgressDialog p;
         private String filename;
@@ -189,13 +232,12 @@ public class MainActivity extends NavDrawerActivity {
         /*
              Constructor
          */
-        public GetAdContent(String url,String filename,Context ctx)
-        {
+        public GetAdContent(String url, String filename, Context ctx) {
             Log.v(TAG, "Url Passed");
-            this.url=url;
-            this.ctx=ctx;
-            this.filename=filename;
-            this.p=new ProgressDialog(ctx);
+            this.url = url;
+            this.ctx = ctx;
+            this.filename = filename;
+            this.p = new ProgressDialog(ctx);
             Log.v(TAG, "Constructor Passed");
         }
 
@@ -217,13 +259,14 @@ public class MainActivity extends NavDrawerActivity {
 
         private String readStream(InputStream is) throws IOException {
             StringBuilder sb = new StringBuilder();
-            BufferedReader r = new BufferedReader(new InputStreamReader(is),1000);
-            for (String line = r.readLine(); line != null; line =r.readLine()){
+            BufferedReader r = new BufferedReader(new InputStreamReader(is), 1000);
+            for (String line = r.readLine(); line != null; line = r.readLine()) {
                 sb.append(line);
             }
             is.close();
             return sb.toString();
         }
+
         /*
              This method to perform a computation on a background thread.
          */
@@ -240,21 +283,21 @@ public class MainActivity extends NavDrawerActivity {
             String boundary = "*****";
 
 
-            int bytesRead,bytesAvailable,bufferSize;
+            int bytesRead, bytesAvailable, bufferSize;
             byte[] buffer;
             int maxBufferSize = 1024 * 1024;
             File selectedFile = new File(filename);
 
 
             String[] parts = filename.split("/");
-            final String fileName = parts[parts.length-1];
+            final String fileName = parts[parts.length - 1];
 
-            if (!selectedFile.isFile()){
+            if (!selectedFile.isFile()) {
 
                 return "Error : File doesn't exists";
 
-            }else{
-                try{
+            } else {
+                try {
                     FileInputStream fileInputStream = new FileInputStream(selectedFile);
                     URL url = new URL(this.url);
                     connection = (HttpURLConnection) url.openConnection();
@@ -265,7 +308,7 @@ public class MainActivity extends NavDrawerActivity {
                     connection.setRequestProperty("Connection", "Keep-Alive");
                     connection.setRequestProperty("ENCTYPE", "multipart/form-data");
                     connection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-                    connection.setRequestProperty("uploaded_file",filename);
+                    connection.setRequestProperty("uploaded_file", filename);
 
                     //creating new dataoutputstream
                     dataOutputStream = new DataOutputStream(connection.getOutputStream());
@@ -282,20 +325,20 @@ public class MainActivity extends NavDrawerActivity {
                     //returns no. of bytes present in fileInputStream
                     bytesAvailable = fileInputStream.available();
                     //selecting the buffer size as minimum of available bytes or 1 MB
-                    bufferSize = Math.min(bytesAvailable,maxBufferSize);
+                    bufferSize = Math.min(bytesAvailable, maxBufferSize);
                     //setting the buffer as byte array of size of bufferSize
                     buffer = new byte[bufferSize];
 
                     //reads bytes from FileInputStream(from 0th index of buffer to buffersize)
-                    bytesRead = fileInputStream.read(buffer,0,bufferSize);
+                    bytesRead = fileInputStream.read(buffer, 0, bufferSize);
 
                     //loop repeats till bytesRead = -1, i.e., no bytes are left to read
-                    while (bytesRead > 0){
+                    while (bytesRead > 0) {
                         //write the bytes read from inputstream
-                        dataOutputStream.write(buffer,0,bufferSize);
+                        dataOutputStream.write(buffer, 0, bufferSize);
                         bytesAvailable = fileInputStream.available();
-                        bufferSize = Math.min(bytesAvailable,maxBufferSize);
-                        bytesRead = fileInputStream.read(buffer,0,bufferSize);
+                        bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                        bytesRead = fileInputStream.read(buffer, 0, bufferSize);
                     }
 
                     dataOutputStream.writeBytes(lineEnd);
@@ -324,8 +367,7 @@ public class MainActivity extends NavDrawerActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                     return "Server Error";
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     return null;
                 }
@@ -340,8 +382,7 @@ public class MainActivity extends NavDrawerActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             p.dismiss();
-            if(result != null && !Objects.equals(result, "Server Error") && !Objects.equals(result, "File Not Found") && !Objects.equals(result, "Url Error"))
-            {
+            if (result != null && !Objects.equals(result, "Server Error") && !Objects.equals(result, "File Not Found") && !Objects.equals(result, "Url Error")) {
                 Log.e("/match/ Response", result);
                 // Do something awesome here
                 //Toast.makeText(ctx, result, Toast.LENGTH_LONG).show();
@@ -349,7 +390,7 @@ public class MainActivity extends NavDrawerActivity {
                 final JSONObject jsonObject;
                 try {
                     jsonObject = new JSONObject(result);
-                    if(jsonObject.get("found").equals("true")) {
+                    if (jsonObject.get("found").equals("true")) {
                         //Parse json response into BannerAd
                         final BannerAd runningAd = new BannerAd(jsonObject);
 
@@ -411,9 +452,8 @@ public class MainActivity extends NavDrawerActivity {
 
                             }
                         });
-                    }
-                    else {
-                        Toast.makeText(ctx,"Fingerprint not in DB or too much noise",Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(ctx, "Fingerprint not in DB or too much noise", Toast.LENGTH_SHORT).show();
                     }
 
                     //Toast.makeText(ctx,"Offer saved successfully",Toast.LENGTH_SHORT).show();
@@ -426,51 +466,10 @@ public class MainActivity extends NavDrawerActivity {
                 }
 
 
-
-
-
-            }
-            else
-            {
-                Toast.makeText(ctx,"Try again! " + result, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(ctx, "Try again! " + result, Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    private void requestPermission() {
-        ActivityCompat.requestPermissions(MainActivity.this, new
-                String[]{WRITE_EXTERNAL_STORAGE, RECORD_AUDIO}, RequestPermissionCode);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[], @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case RequestPermissionCode:
-                if (grantResults.length> 0) {
-                    boolean StoragePermission = grantResults[0] ==
-                            PackageManager.PERMISSION_GRANTED;
-                    boolean RecordPermission = grantResults[1] ==
-                            PackageManager.PERMISSION_GRANTED;
-
-                    if (StoragePermission && RecordPermission) {
-                        Toast.makeText(MainActivity.this, "Permission Granted",
-                                Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(MainActivity.this,"Permission Denied",Toast.LENGTH_LONG).show();
-                    }
-                }
-                break;
-        }
-    }
-
-    public boolean checkPermission() {
-        int result = ContextCompat.checkSelfPermission(getApplicationContext(),
-                WRITE_EXTERNAL_STORAGE);
-        int result1 = ContextCompat.checkSelfPermission(getApplicationContext(),
-                RECORD_AUDIO);
-        return result == PackageManager.PERMISSION_GRANTED &&
-                result1 == PackageManager.PERMISSION_GRANTED;
     }
 
 }

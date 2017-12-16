@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -13,28 +12,20 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.login.LoginManager;
 import com.fyp.mrisecondscreen.R;
 import com.fyp.mrisecondscreen.utils.User;
 
 public class NavDrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private DrawerLayout mDrawerLayout;
     User user;
+    View previousView;
+    private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
     }
 
     @Override
@@ -44,11 +35,9 @@ public class NavDrawerActivity extends AppCompatActivity
 
 
         /* Initialize Username and email from here since it loads the navdrawer menu*/
-        String name, email;
-
         user = new User(getApplicationContext());
-        name = user.getName();
-        email = user.getEmail();
+
+        String name = user.getName(), email = user.getEmail();
 
         if (name == null)
             name = "Username";
@@ -78,8 +67,6 @@ public class NavDrawerActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-
-    View previousView;
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -111,7 +98,7 @@ public class NavDrawerActivity extends AppCompatActivity
         else if (id == R.id.nav_logout) {
             Toast.makeText(getApplicationContext(), "Logging out", Toast.LENGTH_SHORT).show();
             user.logout();
-            Toast.makeText(getApplicationContext(), "Redirect to login Activity", Toast.LENGTH_LONG).show();
+            LoginManager.getInstance().logOut();
             intent = new Intent(NavDrawerActivity.this, LoginActivity.class);
             NavDrawerActivity.this.startActivity(intent);
         }
