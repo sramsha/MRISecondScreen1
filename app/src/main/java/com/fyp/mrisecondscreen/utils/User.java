@@ -3,6 +3,7 @@ package com.fyp.mrisecondscreen.utils;
 import android.content.Context;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class User {
     private String name;
@@ -17,11 +18,13 @@ public class User {
     private String mobileNumber;
     private boolean isProfileComplete;
     private SessionManagement session;
+    public boolean loggedInFromFacebook;
 
     public User(Context applicationContext) {
         session = new SessionManagement(applicationContext);
 
         name = email = ID = password = gender = relationshipStatus = birthday = location = MAC = mobileNumber = null;
+        isProfileComplete = loggedInFromFacebook = false;
 
         if (session.isLoggedIn()) {
             // get user data from session
@@ -37,6 +40,7 @@ public class User {
             this.location = user.get(SessionManagement.KEY_LOCATION);
             this.MAC = user.get(SessionManagement.KEY_MAC);
             this.mobileNumber = user.get(SessionManagement.KEY_MOBILE_NUMBER);
+            this.loggedInFromFacebook = Boolean.parseBoolean(user.get(SessionManagement.KEY_LOGGED_IN_FROM_FACEBOOK));
         }
     }
 
@@ -128,10 +132,47 @@ public class User {
         this.mobileNumber = mobileNumber;
     }
 
+
+
     public void logout() {
         if (session.isLoggedIn())
         {
             session.logoutUser();
         }
+    }
+
+
+    public void updateSession() {
+        session.createLoginSession(name, email, ID, password, gender, relationshipStatus,
+                birthday, location, MAC, mobileNumber, String.valueOf(loggedInFromFacebook));
+    }
+
+    public void updateProfile() {
+        if (Objects.equals(name, "") || Objects.equals(name, "null") || name == null)
+            isProfileComplete = false;
+        else if (Objects.equals(email, "") || Objects.equals(email, "null") || email == null)
+            isProfileComplete = false;
+        else if (Objects.equals(ID, "") || Objects.equals(ID, "null") || ID == null)
+            isProfileComplete = false;
+        else if (Objects.equals(password, "") || Objects.equals(password, "null") || password == null)
+            isProfileComplete = false;
+        else if (Objects.equals(gender, "") || Objects.equals(gender, "null") || gender == null)
+            isProfileComplete = false;
+        else if (Objects.equals(relationshipStatus, "") || Objects.equals(relationshipStatus, "null") || relationshipStatus == null)
+            isProfileComplete = false;
+        else if (Objects.equals(birthday, "") || Objects.equals(birthday, "null") || birthday == null)
+            isProfileComplete = false;
+        else if (Objects.equals(location, "") || Objects.equals(location, "null") || location == null)
+            isProfileComplete = false;
+        else if (Objects.equals(MAC, "") || Objects.equals(MAC, "null") || MAC == null)
+            isProfileComplete = false;
+        else if (Objects.equals(mobileNumber, "") || Objects.equals(mobileNumber, "null") || mobileNumber == null)
+            isProfileComplete = false;
+        else
+            isProfileComplete = true;
+    }
+
+    public void setIsProfileComplete(boolean isProfileComplete) {
+        this.isProfileComplete = isProfileComplete;
     }
 }

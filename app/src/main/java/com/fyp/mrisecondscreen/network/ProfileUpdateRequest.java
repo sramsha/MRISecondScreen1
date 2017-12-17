@@ -1,5 +1,6 @@
 package com.fyp.mrisecondscreen.network;
 
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.fyp.mrisecondscreen.utils.User;
@@ -7,13 +8,13 @@ import com.fyp.mrisecondscreen.utils.User;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RegisterRequest extends StringRequest {
+public class ProfileUpdateRequest extends StringRequest {
 
-    private static final String REGISTER_REQUEST_URL = "http://192.168.1.102:9999/registerCustom.php";
+    private static final String PROFILE_UPDATE_REQUEST_URL = "http://192.168.1.102:9999/updateProfile.php";
     private Map<String, String> params;
 
-    public RegisterRequest(User user, Response.Listener<String> listener) {
-        super(Method.POST, REGISTER_REQUEST_URL, listener, null);
+    public ProfileUpdateRequest(User user, Response.Listener<String> listener) {
+        super(Request.Method.POST, PROFILE_UPDATE_REQUEST_URL, listener, null);
         params = new HashMap<>();
         params.put("name", user.getName() + "");
         params.put("email", user.getEmail() + "");

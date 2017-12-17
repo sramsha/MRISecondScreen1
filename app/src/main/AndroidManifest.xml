@@ -53,9 +53,9 @@
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/title_activity_main2"
-            android:theme="@style/AppTheme">
-        </activity>
-        <activity android:name=".activity.AdsViewed"/>
+            android:theme="@style/AppTheme"/>
+        <activity android:name=".activity.AdsViewed" />
+        <activity android:name=".activity.ViewProfile"/>
     </application>
 
 </manifest>

@@ -79,20 +79,24 @@ public class NavDrawerActivity extends AppCompatActivity
             Toast.makeText(getApplicationContext(), " Sync Now", Toast.LENGTH_LONG).show();
             intent = new Intent(NavDrawerActivity.this, MainActivity.class);
             NavDrawerActivity.this.startActivity(intent);
+            NavDrawerActivity.this.finish();
         }
 
         else if (id == R.id.nav_syncedads) {
             Toast.makeText(getApplicationContext(), " Ads Viewed", Toast.LENGTH_LONG).show();
             intent = new Intent(NavDrawerActivity.this, AdsViewed.class);
             NavDrawerActivity.this.startActivity(intent);
+            NavDrawerActivity.this.finish();
         }
 
         else if (id == R.id.nav_coupons) {
             Toast.makeText(getApplicationContext(), "Start Coupons Activity", Toast.LENGTH_LONG).show();
         }
 
-        else if (id == R.id.nav_manage) {
-            Toast.makeText(getApplicationContext(), "Profile Activity", Toast.LENGTH_LONG).show();
+        else if (id == R.id.nav_profile) {
+            intent = new Intent(NavDrawerActivity.this, ViewProfile.class);
+            NavDrawerActivity.this.startActivity(intent);
+            NavDrawerActivity.this.finish();
         }
 
         else if (id == R.id.nav_logout) {
@@ -101,6 +105,7 @@ public class NavDrawerActivity extends AppCompatActivity
             LoginManager.getInstance().logOut();
             intent = new Intent(NavDrawerActivity.this, LoginActivity.class);
             NavDrawerActivity.this.startActivity(intent);
+            NavDrawerActivity.this.finish();
         }
         /* This code is removed because the application lags when activity is switched along with Navdrawer closing
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

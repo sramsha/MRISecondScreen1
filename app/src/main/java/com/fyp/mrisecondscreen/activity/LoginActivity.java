@@ -27,7 +27,6 @@ import com.facebook.login.widget.LoginButton;
 import com.fyp.mrisecondscreen.R;
 import com.fyp.mrisecondscreen.network.LoginRequest;
 import com.fyp.mrisecondscreen.network.RegisterRequest;
-import com.fyp.mrisecondscreen.utils.SessionManagement;
 import com.fyp.mrisecondscreen.utils.User;
 
 import org.json.JSONException;
@@ -194,12 +193,14 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (Objects.equals(serverReply, "USER_REGISTERED")) {
                     Toast.makeText(getApplicationContext(), "Registered Successfully!", Toast.LENGTH_LONG).show();
+                    user.loggedInFromFacebook = true;
                     LoginHandler(user.getID(), user.getPassword());
                     /*Intent intent = new Intent(LoginActivity.this, LoginActivity.class);
                     LoginActivity.this.startActivity(intent);*/
                 }
                 else {
                     if (Objects.equals(serverReply, "USERNAME_NOT_AVAILABLE")){
+                        user.loggedInFromFacebook = true;
                         LoginHandler(user.getID(), user.getPassword());
                     }
                     else {
@@ -229,20 +230,17 @@ public class LoginActivity extends AppCompatActivity {
                     String success = jsonResponse.getString("success");
                     Log.e("Response", "Success = "+success);
                     if (success.equals("true")){
-                        String name = jsonResponse.getString("name");
-                        String email = jsonResponse.getString("email");
-                        String ID = jsonResponse.getString("ID");
-                        String password = jsonResponse.getString("password");
-                        String gender = jsonResponse.getString("gender");
-                        String relationshipStatus = jsonResponse.getString("relationshipStatus");
-                        String birthday = jsonResponse.getString("birthday");
-                        String location = jsonResponse.getString("location");
-                        String MAC = jsonResponse.getString("MAC");
-                        String mobileNumber = jsonResponse.getString("mobileNumber");
-                        String isProfileComplete = jsonResponse.getString("isProfileComplete");
-
-                        // Session Manager
-                        SessionManagement session = new SessionManagement(getApplicationContext());
+                        user.setName(jsonResponse.getString("name"));
+                        user.setEmail(jsonResponse.getString("email"));
+                        user.setID(jsonResponse.getString("ID"));
+                        user.setPassword(jsonResponse.getString("password"));
+                        user.setGender(jsonResponse.getString("gender"));
+                        user.setRelationshipStatus(jsonResponse.getString("relationshipStatus"));
+                        user.setBirthday(jsonResponse.getString("birthday"));
+                        user.setLocation(jsonResponse.getString("location"));
+                        user.setMAC(jsonResponse.getString("MAC"));
+                        user.setMobileNumber(jsonResponse.getString("mobileNumber"));
+                        user.setIsProfileComplete(Boolean.parseBoolean(jsonResponse.getString("isProfileComplete")));
 
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 /*                        intent.putExtra("username", ID);
@@ -250,8 +248,8 @@ public class LoginActivity extends AppCompatActivity {
                         intent.putExtra("name", name);
                         intent.putExtra("email", email);
 */
-                        session.createLoginSession(name, email, ID, password, gender,
-                                relationshipStatus, birthday, location, MAC, mobileNumber);
+                        user.updateSession();
+
                         Toast.makeText(getApplicationContext(), "Logged in succesfully!", Toast.LENGTH_LONG).show();
                         LoginActivity.this.startActivity(intent);
                         LoginActivity.this.finish();

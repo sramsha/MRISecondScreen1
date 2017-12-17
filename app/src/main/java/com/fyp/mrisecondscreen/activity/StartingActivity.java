@@ -23,6 +23,7 @@ public class StartingActivity extends AppCompatActivity {
         if (session.isLoggedIn()) {
             Intent myIntent = new Intent(StartingActivity.this, MainActivity.class);
             StartingActivity.this.startActivity(myIntent);
+            StartingActivity.this.finish();
         } else {
             logo = findViewById(R.id.logo);
             Animation myanimation = AnimationUtils.loadAnimation(this, R.anim.logotransition);
@@ -37,6 +38,7 @@ public class StartingActivity extends AppCompatActivity {
                     } finally {
                         Intent myIntent = new Intent(StartingActivity.this, LoginActivity.class);
                         StartingActivity.this.startActivity(myIntent);
+                        StartingActivity.this.finish();
 
                         // close this activity
                         finish();
