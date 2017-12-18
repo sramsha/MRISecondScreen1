@@ -17,13 +17,15 @@ public class User {
     private String MAC;
     private String mobileNumber;
     private boolean isProfileComplete;
+    private String city;
+    private String country;
     private SessionManagement session;
     public boolean loggedInFromFacebook;
 
     public User(Context applicationContext) {
         session = new SessionManagement(applicationContext);
 
-        name = email = ID = password = gender = relationshipStatus = birthday = location = MAC = mobileNumber = null;
+        name = email = ID = password = gender = relationshipStatus = birthday = location = MAC = mobileNumber = city = country = null;
         isProfileComplete = loggedInFromFacebook = false;
 
         if (session.isLoggedIn()) {
@@ -41,6 +43,8 @@ public class User {
             this.MAC = user.get(SessionManagement.KEY_MAC);
             this.mobileNumber = user.get(SessionManagement.KEY_MOBILE_NUMBER);
             this.loggedInFromFacebook = Boolean.parseBoolean(user.get(SessionManagement.KEY_LOGGED_IN_FROM_FACEBOOK));
+            this.city = user.get(SessionManagement.KEY_CITY);
+            this.country = user.get(SessionManagement.KEY_COUNTRY);
         }
     }
 
@@ -132,7 +136,21 @@ public class User {
         this.mobileNumber = mobileNumber;
     }
 
+    public String getCity() {
+        return city;
+    }
 
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
 
     public void logout() {
         if (session.isLoggedIn())
@@ -143,8 +161,8 @@ public class User {
 
 
     public void updateSession() {
-        session.createLoginSession(name, email, ID, password, gender, relationshipStatus,
-                birthday, location, MAC, mobileNumber, String.valueOf(loggedInFromFacebook));
+        session.createLoginSession(name, email, ID, password, gender, relationshipStatus, birthday,
+                location, MAC, mobileNumber, String.valueOf(loggedInFromFacebook), city, country);
     }
 
     public void updateProfile() {
@@ -167,6 +185,10 @@ public class User {
         else if (Objects.equals(MAC, "") || Objects.equals(MAC, "null") || MAC == null)
             isProfileComplete = false;
         else if (Objects.equals(mobileNumber, "") || Objects.equals(mobileNumber, "null") || mobileNumber == null)
+            isProfileComplete = false;
+        else if (Objects.equals(city, "") || Objects.equals(city, "null") || city == null)
+            isProfileComplete = false;
+        else if (Objects.equals(country, "") || Objects.equals(country, "null") || country == null)
             isProfileComplete = false;
         else
             isProfileComplete = true;

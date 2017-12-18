@@ -24,6 +24,8 @@ public class SessionManagement {
     public static final String KEY_LOCATION = "KEY_LOCATION";
     public static final String KEY_MOBILE_NUMBER = "KEY_MOBILE_NUMBER";
     public static final String KEY_LOGGED_IN_FROM_FACEBOOK = "KEY_LOGGED_IN_FROM_FACEBOOK";
+    public static final String KEY_CITY = "KEY_CITY";
+    public static final String KEY_COUNTRY = "KEY_COUNTRY";
     // Shared pref mode
     public int PRIVATE_MODE = 0;
     // Shared Preferences
@@ -41,7 +43,7 @@ public class SessionManagement {
         editor = pref.edit();
     }
 
-    public void createLoginSession(String name, String email, String username, String password, String gender, String relationship_status, String birthday, String location, String MAC, String mobile_number, String loggedInFromFacebook) {
+    public void createLoginSession(String name, String email, String username, String password, String gender, String relationship_status, String birthday, String location, String MAC, String mobile_number, String loggedInFromFacebook, String city, String country) {
         // Storing login value as TRUE
         editor.putBoolean(String.valueOf(IS_LOGIN), true);
         Log.e("SM[NAME]", name);
@@ -57,6 +59,8 @@ public class SessionManagement {
         editor.putString(KEY_LOCATION, location);
         editor.putString(KEY_MOBILE_NUMBER, mobile_number);
         editor.putString(KEY_LOGGED_IN_FROM_FACEBOOK, loggedInFromFacebook);
+        editor.putString(KEY_CITY, city);
+        editor.putString(KEY_COUNTRY, country);
 
         // commit changes
         editor.commit();
@@ -76,6 +80,8 @@ public class SessionManagement {
         user.put(KEY_LOCATION, pref.getString(KEY_LOCATION, null));
         user.put(KEY_MOBILE_NUMBER, pref.getString(KEY_MOBILE_NUMBER, null));
         user.put(KEY_LOGGED_IN_FROM_FACEBOOK, pref.getString(KEY_LOGGED_IN_FROM_FACEBOOK, null));
+        user.put(KEY_CITY, pref.getString(KEY_CITY, null));
+        user.put(KEY_COUNTRY, pref.getString(KEY_COUNTRY, null));
 
         // return user
         return user;

@@ -65,6 +65,8 @@ public class ViewProfile extends NavDrawerActivity {
         final EditText birthday = findViewById(R.id.birthday);
         final EditText location = findViewById(R.id.location);
         final EditText mobileNumber = findViewById(R.id.mobileNumber);
+        final EditText city = findViewById(R.id.city);
+        final EditText country = findViewById(R.id.country);
         Button profileViewUpdate = findViewById(R.id.profileViewUpdate);
 
         name.setText(user.getName()+"", TextView.BufferType.EDITABLE);
@@ -76,6 +78,8 @@ public class ViewProfile extends NavDrawerActivity {
         birthday.setText((!Objects.equals(user.getBirthday(), "null")) ? user.getBirthday() : "", TextView.BufferType.EDITABLE);
         location.setText((!Objects.equals(user.getLocation(), "null")) ? user.getLocation() : "", TextView.BufferType.EDITABLE);
         mobileNumber.setText((!Objects.equals(user.getMobileNumber(), "null")) ? user.getMobileNumber() : "", TextView.BufferType.EDITABLE);
+        city.setText((!Objects.equals(user.getCity(), "null")) ? user.getCity() : "", TextView.BufferType.EDITABLE);
+        country.setText((!Objects.equals(user.getCountry(), "null")) ? user.getCountry() : "", TextView.BufferType.EDITABLE);
 
         if (user.loggedInFromFacebook)
         {
@@ -97,6 +101,8 @@ public class ViewProfile extends NavDrawerActivity {
                 String bday = birthday.getText().toString();
                 String loc = location.getText().toString();
                 String mobilenum = mobileNumber.getText().toString();
+                String cit = city.getText().toString();
+                String countr = country.getText().toString();
 
                 if (Objects.equals(relationship_status, "") || !isValidRelationshipStatus(relationship_status))
                 {
@@ -115,6 +121,18 @@ public class ViewProfile extends NavDrawerActivity {
                     Toast.makeText(ViewProfile.this, "Please enter your Full Address", Toast.LENGTH_LONG).show();
                     location.setFocusable(true);
                     location.requestFocus();
+                }
+                else if (Objects.equals(cit, ""))
+                {
+                    Toast.makeText(ViewProfile.this, "Please enter your City", Toast.LENGTH_LONG).show();
+                    city.setFocusable(true);
+                    city.requestFocus();
+                }
+                else if (Objects.equals(countr, ""))
+                {
+                    Toast.makeText(ViewProfile.this, "Please enter your Country", Toast.LENGTH_LONG).show();
+                    country.setFocusable(true);
+                    country.requestFocus();
                 }
                 else if (Objects.equals(mobilenum, ""))
                 {
@@ -167,6 +185,8 @@ public class ViewProfile extends NavDrawerActivity {
                         user.setBirthday(bday);
                         user.setLocation(loc);
                         user.setMobileNumber(mobilenum);
+                        user.setCity(cit);
+                        user.setCountry(countr);
                         user.updateProfile();
 
                         /*Response Listener */

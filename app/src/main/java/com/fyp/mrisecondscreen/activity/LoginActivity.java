@@ -88,8 +88,7 @@ public class LoginActivity extends AppCompatActivity {
 
         login_button_FB = findViewById(R.id.login_button_FB);
         login_button_FB.setReadPermissions(Arrays.asList(
-                "email", "public_profile", "user_birthday",
-                "user_location", "user_relationships"));
+                "email", "public_profile", "user_birthday", "user_relationships"));
 
         callbackmanager = CallbackManager.Factory.create();
         login_button_FB.registerCallback(callbackmanager, new FacebookCallback<LoginResult>() {
@@ -109,7 +108,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 Bundle parameters = new Bundle();
                 parameters.putString("fields", "name, email, id, gender, " +
-                        "birthday, location, relationship_status");
+                        "birthday, relationship_status");
                 graphRequest.setParameters(parameters);
                 graphRequest.executeAsync();
             }
@@ -241,6 +240,8 @@ public class LoginActivity extends AppCompatActivity {
                         user.setMAC(jsonResponse.getString("MAC"));
                         user.setMobileNumber(jsonResponse.getString("mobileNumber"));
                         user.setIsProfileComplete(Boolean.parseBoolean(jsonResponse.getString("isProfileComplete")));
+                        user.setCity(jsonResponse.getString("city"));
+                        user.setCountry(jsonResponse.getString("country"));
 
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 /*                        intent.putExtra("username", ID);
@@ -311,12 +312,6 @@ public class LoginActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
             user.setBirthday(null);
-        }
-        try {
-            user.setLocation(object.getString("location"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-            user.setLocation(null);
         }
 
         Log.e("[FB]BIRTHDAY", user.getBirthday() + "");

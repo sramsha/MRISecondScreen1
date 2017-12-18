@@ -26,6 +26,8 @@ public class RegisterRequest extends StringRequest {
         params.put("MAC", user.getMAC() + "");
         params.put("mobileNumber", user.getMobileNumber() + "");
         params.put("isProfileComplete", user.isProfileComplete() + "");
+        params.put("city", user.getCity() + "");
+        params.put("country", user.getCountry() + "");
         //params.put("imei", imei);
     }
 
