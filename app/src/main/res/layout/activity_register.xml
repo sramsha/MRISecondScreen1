@@ -9,7 +9,7 @@
         <LinearLayout
 
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:background="@color/lightgrey"
             android:orientation="vertical">
 
@@ -18,8 +18,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="48dp"
                 android:background="#e8e8e7"
-                android:orientation="horizontal"
-                android:layout_alignParentTop="true">
+                android:orientation="horizontal">
 
                 <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -73,14 +72,14 @@
                     <EditText
                         android:layout_width="fill_parent"
                         android:layout_height="40dp"
-                        android:hint="Age"
+                        android:hint="Birthday (MM/DD/YYYY)"
                         android:background="#f3f3f3"
                         android:paddingLeft="5dp"
                         android:layout_marginTop="15dp"
                         android:id="@+id/register_age"
                         android:singleLine="true"
-                        android:inputType="numberDecimal"
-                        android:maxLength="3" />
+                        android:maxLength="10"
+                        android:inputType="date" />
 
                     <EditText
                         android:layout_width="fill_parent"
