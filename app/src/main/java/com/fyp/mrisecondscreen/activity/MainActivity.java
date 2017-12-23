@@ -64,8 +64,8 @@ public class MainActivity extends NavDrawerActivity {
     }
 
     public static final int RequestPermissionCode = 1;
-    private static final String SERVER_MATCH_URL = "http://lb-89089438.us-east-2.elb.amazonaws.com/api/clip/match/";
-    private static final String SERVER_MEDIA_URL = "http://lb-89089438.us-east-2.elb.amazonaws.com/api/uploads/images/";
+    private static final String SERVER_MATCH_URL = "http://lb-89089438.us-east-2.elb.amazonaws.com/api/clip/match";
+    private static final String SERVER_MEDIA_URL = "http://lb-89089438.us-east-2.elb.amazonaws.com/api/uploads/images";
     private static TextView recordText;
     private static ProgressBar progressBar;
     private static ImageView mic;
