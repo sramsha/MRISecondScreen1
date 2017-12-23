@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class LoginRequest extends StringRequest {
 
-    private static final String LOGIN_REQUEST_URL = "http://192.168.1.102:9999/loginCustom.php";
+    private static final String LOGIN_REQUEST_URL = "http://lb-89089438.us-east-2.elb.amazonaws.com/api/users/login";
     private Map<String, String> params;
 
     public LoginRequest(String username, String password, Response.Listener<String> listener){

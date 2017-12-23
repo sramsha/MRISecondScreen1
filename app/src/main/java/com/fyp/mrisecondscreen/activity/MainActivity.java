@@ -1,3 +1,4 @@
+
 package com.fyp.mrisecondscreen.activity;
 
 import android.app.Dialog;
@@ -17,6 +18,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -57,9 +59,13 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 @SuppressWarnings("ALL")
 public class MainActivity extends NavDrawerActivity {
 
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
     public static final int RequestPermissionCode = 1;
-    private static final String SERVER_MATCH_URL = "http://192.168.8.100:5000/match/";
-    private static final String SERVER_MEDIA_URL = "http://192.168.8.100:5000/uploads/images/";
+    private static final String SERVER_MATCH_URL = "http://lb-89089438.us-east-2.elb.amazonaws.com/api/clip/match/";
+    private static final String SERVER_MEDIA_URL = "http://lb-89089438.us-east-2.elb.amazonaws.com/api/uploads/images/";
     private static TextView recordText;
     private static ProgressBar progressBar;
     private static ImageView mic;

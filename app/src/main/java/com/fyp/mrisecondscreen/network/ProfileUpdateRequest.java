@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class ProfileUpdateRequest extends StringRequest {
 
-    private static final String PROFILE_UPDATE_REQUEST_URL = "http://192.168.1.102:9999/updateProfile.php";
+    private static final String PROFILE_UPDATE_REQUEST_URL = "http://lb-89089438.us-east-2.elb.amazonaws.com/api/users/update";
     private Map<String, String> params;
 
     public ProfileUpdateRequest(User user, Response.Listener<String> listener) {

@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class RegisterRequest extends StringRequest {
 
-    private static final String REGISTER_REQUEST_URL = "http://192.168.1.102:9999/registerCustom.php";
+    private static final String REGISTER_REQUEST_URL = "http://lb-89089438.us-east-2.elb.amazonaws.com/api/users/add";
     private Map<String, String> params;
 
     public RegisterRequest(User user, Response.Listener<String> listener) {
