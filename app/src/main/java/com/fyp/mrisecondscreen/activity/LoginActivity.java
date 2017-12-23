@@ -1,7 +1,13 @@
 package com.fyp.mrisecondscreen.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -32,7 +38,10 @@ import com.fyp.mrisecondscreen.utils.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.NetworkInterface;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -75,6 +84,11 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_register);
+        if (android.os.Build.VERSION.SDK_INT > 9)
+        {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
 
         user = new User(getApplicationContext());
 
@@ -162,11 +176,33 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 else
                 {
-                    login_password.setText("");
-                    login_username.setText("");
-                    login_username.setFocusable(true);
-                    login_username.requestFocus();
-                    LoginHandler(username, password);
+                    if (checkActiveInternetConnection())
+                    {
+                        /*login_password.setText("");
+                        login_username.setText("");
+                        login_username.setFocusable(true);
+                        login_username.requestFocus();*/
+                        LoginHandler(username, password);
+                    }
+                    else
+                    {
+                        Snackbar snackbar = Snackbar
+                                .make(findViewById(R.id.coordinatorLayout), "No internet connection!", Snackbar.LENGTH_LONG)
+                                .setAction("CLOSE", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                    }
+                                });
+
+                        // Changing message text color
+                        snackbar.setActionTextColor(Color.RED);
+
+                        // Changing action button text color
+                        View sbView = snackbar.getView();
+                        TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(Color.YELLOW);
+                        snackbar.show();
+                    }
                 }
             }
         });
@@ -325,6 +361,36 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackmanager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager manager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+        boolean isAvailable = false;
+        if (networkInfo != null && networkInfo.isConnected()) {
+            // Network is present and connected
+            isAvailable = true;
+        }
+        return isAvailable;
+    }
+
+    public boolean checkActiveInternetConnection() {
+        if (isNetworkAvailable()) {
+            try {
+                HttpURLConnection urlc = (HttpURLConnection) (new URL("http://www.google.com").openConnection());
+                urlc.setRequestProperty("User-Agent", "Test");
+                urlc.setRequestProperty("Connection", "close");
+                urlc.setConnectTimeout(1500);
+                urlc.connect();
+                return (urlc.getResponseCode() == 200);
+            } catch (IOException e) {
+                Log.e("Internet Error", "Error: ", e);
+            }
+        } else {
+            Log.d("Internet Error", "No network present");
+        }
+        return false;
     }
 
 }
