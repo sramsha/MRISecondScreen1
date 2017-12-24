@@ -78,10 +78,12 @@ public class MainActivity extends NavDrawerActivity {
     private static AudioRecorder recorder;
 
     SharedPreferences sharedpreferences;
+    public static boolean isAppRunning;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_main);
+        isAppRunning = true;
 
         if (android.os.Build.VERSION.SDK_INT > 9)
         {
@@ -217,6 +219,7 @@ public class MainActivity extends NavDrawerActivity {
         alertDialog.setMessage("Do you want to exit the application?");
         alertDialog.setTitle("Touch Point");
         alertDialog.show();
+        isAppRunning = false;
     }
 
     private void requestPermission() {
