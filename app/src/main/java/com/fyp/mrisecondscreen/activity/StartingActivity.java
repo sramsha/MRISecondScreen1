@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.fyp.mrisecondscreen.R;
 import com.fyp.mrisecondscreen.utils.SessionManagement;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class StartingActivity extends AppCompatActivity {
 
@@ -19,6 +20,8 @@ public class StartingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_starting);
         final SessionManagement session = new SessionManagement(getApplicationContext());
+        // Subscribing to the topic for push notification
+        FirebaseMessaging.getInstance().subscribeToTopic("all");
         // if user is already logged in, no need to show him the splash screen
         if (session.isLoggedIn()) {
             Intent myIntent = new Intent(StartingActivity.this, MainActivity.class);
