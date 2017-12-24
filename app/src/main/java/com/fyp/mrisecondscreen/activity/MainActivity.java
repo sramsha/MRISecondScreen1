@@ -59,10 +59,6 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 @SuppressWarnings("ALL")
 public class MainActivity extends NavDrawerActivity {
 
-    static {
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-    }
-
     public static final int RequestPermissionCode = 1;
     private static final String SERVER_MATCH_URL = "http://lb-89089438.us-east-2.elb.amazonaws.com/api/clip/match";
     private static final String SERVER_MEDIA_URL = "http://lb-89089438.us-east-2.elb.amazonaws.com/api/uploads/images";
@@ -75,6 +71,9 @@ public class MainActivity extends NavDrawerActivity {
     SharedPreferences sharedpreferences;
 
     protected void onCreate(Bundle savedInstanceState) {
+
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_main);
 

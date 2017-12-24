@@ -239,7 +239,7 @@ tools:openDrawer="start">
                 android:layout_marginTop="16dp"
                 android:background="@drawable/user_profile_image_background"
                 android:elevation="4dp"
-                android:src="@drawable/profileview_icon" />
+                app:srcCompat="@drawable/profileview_icon" />
         </RelativeLayout>
 
     </ScrollView>
