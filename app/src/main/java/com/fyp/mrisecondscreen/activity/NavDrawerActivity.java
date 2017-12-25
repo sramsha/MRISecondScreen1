@@ -83,8 +83,8 @@ public class NavDrawerActivity extends AppCompatActivity
         }
 
         else if (id == R.id.nav_syncedads) {
-            Toast.makeText(getApplicationContext(), " Ads Viewed", Toast.LENGTH_LONG).show();
-            intent = new Intent(NavDrawerActivity.this, AdsViewed.class);
+            Toast.makeText(getApplicationContext(), " Ads Viewed By the User", Toast.LENGTH_LONG).show();
+            intent = new Intent(NavDrawerActivity.this, OffersActivity.class);
             NavDrawerActivity.this.startActivity(intent);
             NavDrawerActivity.this.finish();
         }
