@@ -1,19 +1,14 @@
 package com.fyp.mrisecondscreen.activity;
 
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.TwoLineListItem;
+import android.widget.SimpleAdapter;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -22,7 +17,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.fyp.mrisecondscreen.R;
-import com.fyp.mrisecondscreen.entity.Offers;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,6 +24,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class SupportedAds extends NavDrawerActivity {
@@ -37,8 +33,7 @@ public class SupportedAds extends NavDrawerActivity {
     String[] Title;
     String[] Content;
     ListView list;
-    Offers offer;
-    ArrayList<Offers> offers = new ArrayList<>();
+    final HashMap<String, String> Offers = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,13 +82,26 @@ public class SupportedAds extends NavDrawerActivity {
                                 offerContent  = jsonobject.getString("offercontent");
                                 offerTitle = jsonobject.getString("offertitle");
 
-                                /*offer = new Offers();
-                                offer.setTitle(offerTitle);
-                                offer.setContent(offerContent);
-                                Log.e("Title", offerTitle);
-                                Log.e("Content", offerContent);
-                                offers.add(offer);*/
+                                Offers.put(offerTitle, offerContent);
                             }
+
+                            List<HashMap<String, String>> listItems = new ArrayList<>();
+                            SimpleAdapter adapter = new SimpleAdapter(getApplicationContext(), listItems, R.layout.supported_ad_list_item,
+                                    new String[]{"First Line", "Second Line"},
+                                    new int[]{R.id.text1, R.id.text2});
+
+
+                            Iterator it = Offers.entrySet().iterator();
+                            while (it.hasNext())
+                            {
+                                HashMap<String, String> resultsMap = new HashMap<>();
+                                Map.Entry pair = (Map.Entry)it.next();
+                                resultsMap.put("First Line", pair.getKey().toString());
+                                resultsMap.put("Second Line", pair.getValue().toString());
+                                listItems.add(resultsMap);
+                            }
+
+                            list.setAdapter(adapter);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -118,79 +126,13 @@ public class SupportedAds extends NavDrawerActivity {
         queue.add(postRequest);
     /* Getting Supported Ads from the api*/
 
-        /* If i use these hard coded values, it works fine */
-        offer = new Offers();
-        offer.setTitle("Ad1");
-        offer.setContent("Advertisement #01 Description");
-        offers.add(offer);
-
-        offer = new Offers();
-        offer.setTitle("Ad2");
-        offer.setContent("Advertisement #02 Description");
-        offers.add(offer);
-
-        offer = new Offers();
-        offer.setTitle("Ad3");
-        offer.setContent("Advertisement #03 Description");
-        offers.add(offer);
-
-        offer = new Offers();
-        offer.setTitle("Ad4");
-        offer.setContent("Advertisement #04 Description");
-        offers.add(offer);
-
-        list.setAdapter(new MyAdapter(getApplicationContext(), offers));
-        //list.deferNotifyDataSetChanged();
-
     }
 
-    private class MyAdapter extends BaseAdapter {
-
-        private Context context;
-        private ArrayList<Offers> offers;
-
-        public MyAdapter(Context context, ArrayList<Offers> offers) {
-            this.context = context;
-            this.offers = offers;
-        }
-
-        @Override
-        public int getCount() {
-            return offers.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return offers.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-            TwoLineListItem twoLineListItem;
-
-            if (convertView == null) {
-                LayoutInflater inflater = (LayoutInflater) context
-                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                twoLineListItem = (TwoLineListItem) inflater.inflate(
-                        android.R.layout.simple_list_item_2, null);
-            } else {
-                twoLineListItem = (TwoLineListItem) convertView;
-            }
-
-            TextView text1 = twoLineListItem.getText1();
-            TextView text2 = twoLineListItem.getText2();
-
-            text1.setText(offers.get(position).getTitle());
-            text2.setText(offers.get(position).getContent());
-
-            return twoLineListItem;
-        }
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(SupportedAds.this, MainActivity.class);
+        startActivity(intent);
+        SupportedAds.this.finish();
     }
 }
 
