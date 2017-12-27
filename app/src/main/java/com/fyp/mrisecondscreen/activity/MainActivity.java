@@ -150,7 +150,7 @@ public class MainActivity extends NavDrawerActivity {
                         progressBar.setVisibility(View.VISIBLE);
 
                         // start timer for 10sec and then stop recorder
-                        CountDownTimer countDowntimer = new CountDownTimer(5000, 1000) {
+                        CountDownTimer countDowntimer = new CountDownTimer(10000, 1000) {
                             public void onTick(long millisUntilFinished) {
                             }
 

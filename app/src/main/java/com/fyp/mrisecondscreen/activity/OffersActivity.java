@@ -56,7 +56,7 @@ public class OffersActivity extends NavDrawerActivity {
         // Create the adapter to convert the array to views
         final OffersAdapter adapter = new OffersAdapter(OffersActivity.this, arrayOfOffers);
         // Attach the adapter to a ListView
-        final ListView listView = (ListView) findViewById(R.id.list_offers);
+        final ListView listView = findViewById(R.id.list_offers);
         listView.setAdapter(adapter);
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         listView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
