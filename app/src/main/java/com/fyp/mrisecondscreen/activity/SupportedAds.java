@@ -3,8 +3,8 @@ package com.fyp.mrisecondscreen.activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -20,30 +20,24 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class SupportedAds extends AppCompatActivity {
 
-    String[] Title={};
-    String[] Content={};
+    String[] Title;
+    String[] Content;
     int[] ID={};
     ListView list;
-    private ArrayAdapter<String> adapter;
-    private ArrayList<String> arrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_supported_ads);
         list = findViewById(R.id.list);
-        arrayList = new ArrayList<String>();
+        final HashMap<String, String> Offers = new HashMap<>();
 
-        // Adapter: You need three parameters 'the context, id of the layout (it will be where the data is shown),
-        // and the array that contains the data
-        adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_2, arrayList);
-
-        // Here, you set the data in your ListView
-        list.setAdapter(adapter);
 
     /* Getting Supported Ads from the api*/
         RequestQueue queue = Volley.newRequestQueue(SupportedAds.this);
@@ -78,11 +72,6 @@ public class SupportedAds extends AppCompatActivity {
                                 Log.e("OfferTitle["+i+"]", offerTitle);
                                 Log.e("OfferID["+i+"]", String.valueOf(offerID));
 
-                                // this line adds the data of your EditText and puts in your array
-                                arrayList.add(Title[i]);
-                                arrayList.add(Content[i]);
-                                // next thing you have to do is check if your adapter has changed
-                                adapter.notifyDataSetChanged();
                             }
 
                         } catch (JSONException e) {
@@ -110,6 +99,31 @@ public class SupportedAds extends AppCompatActivity {
         };
         queue.add(postRequest);
     /* Getting Supported Ads from the api*/
+
+        Offers.put(Title[0], Content[0]);
+        Offers.put(Title[1], Content[1]);
+        Offers.put(Title[2], Content[2]);
+        Offers.put(Title[3], Content[3]);
+        Offers.put(Title[4], Content[4]);
+        Offers.put(Title[5], Content[5]);
+        Offers.put(Title[6], Content[6]);
+        List<HashMap<String, String>> listItems = new ArrayList<>();
+        SimpleAdapter adapter = new SimpleAdapter(this, listItems, R.layout.list_item,
+                new String[]{"First Line", "Second Line"},
+                new int[]{R.id.text1, R.id.text2});
+
+
+        Iterator it = Offers.entrySet().iterator();
+        while (it.hasNext())
+        {
+            HashMap<String, String> resultsMap = new HashMap<>();
+            Map.Entry pair = (Map.Entry)it.next();
+            resultsMap.put("First Line", pair.getKey().toString());
+            resultsMap.put("Second Line", pair.getValue().toString());
+            listItems.add(resultsMap);
+        }
+
+        list.setAdapter(adapter);
     }
 
 }

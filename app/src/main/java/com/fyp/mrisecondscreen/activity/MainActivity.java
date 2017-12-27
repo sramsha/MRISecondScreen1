@@ -304,7 +304,7 @@ public class MainActivity extends NavDrawerActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             Log.v(TAG, "Showing ProgressDIalog Passed");
-            p.setMessage("Getting your Offer");
+            p.setMessage("Fetching offers and discounts for you");
             p.setIndeterminate(false);
             p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             p.setCancelable(false);
@@ -551,7 +551,7 @@ public class MainActivity extends NavDrawerActivity {
                             };
                             queue.add(postRequest);
                     } else {
-                        Toast.makeText(ctx, "Fingerprint not in DB or too much noise", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ctx, "The Brand/Content not enrolled with us as yet", Toast.LENGTH_SHORT).show();
                     }
 
                     //Toast.makeText(ctx,"Offer saved successfully",Toast.LENGTH_SHORT).show();

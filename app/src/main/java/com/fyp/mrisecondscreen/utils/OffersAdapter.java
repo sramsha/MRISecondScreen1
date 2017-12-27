@@ -49,7 +49,7 @@ public class OffersAdapter extends ArrayAdapter<BannerAd>{
 
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_offer, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item, parent, false);
         }
         // Lookup view for data population
         TextView tvHeading = (TextView) convertView.findViewById(R.id.offer_heading);
