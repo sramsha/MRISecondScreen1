@@ -52,8 +52,8 @@ public class OffersAdapter extends ArrayAdapter<BannerAd>{
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_offer, parent, false);
         }
         // Lookup view for data population
-        TextView tvHeading = (TextView) convertView.findViewById(R.id.offer_heading);
-        ImageView offerImage = (ImageView) convertView.findViewById(R.id.offer_image);
+        TextView tvHeading = convertView.findViewById(R.id.offer_heading);
+        ImageView offerImage = convertView.findViewById(R.id.offer_image);
 
         // Populate the data into the template view using the data object
         tvHeading.setText(offer.getOfferTitle());

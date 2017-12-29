@@ -83,14 +83,17 @@ public class NavDrawerActivity extends AppCompatActivity
         }
 
         else if (id == R.id.nav_syncedads) {
-            Toast.makeText(getApplicationContext(), " Ads Viewed", Toast.LENGTH_LONG).show();
-            intent = new Intent(NavDrawerActivity.this, AdsViewed.class);
+            Toast.makeText(getApplicationContext(), " Ads Viewed By the User", Toast.LENGTH_LONG).show();
+            intent = new Intent(NavDrawerActivity.this, OffersActivity.class);
             NavDrawerActivity.this.startActivity(intent);
             NavDrawerActivity.this.finish();
         }
 
-        else if (id == R.id.nav_coupons) {
-            Toast.makeText(getApplicationContext(), "Start Coupons Activity", Toast.LENGTH_LONG).show();
+        else if (id == R.id.nav_supported_ads) {
+            Toast.makeText(getApplicationContext(), "Display all the supported ads", Toast.LENGTH_LONG).show();
+            intent = new Intent(NavDrawerActivity.this, SupportedAds.class);
+            NavDrawerActivity.this.startActivity(intent);
+            NavDrawerActivity.this.finish();
         }
 
         else if (id == R.id.nav_profile) {

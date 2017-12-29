@@ -1,8 +1,11 @@
 package com.fyp.mrisecondscreen.activity;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
@@ -15,16 +18,15 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.fyp.mrisecondscreen.R;
 import com.fyp.mrisecondscreen.db.DatabaseHelper;
 import com.fyp.mrisecondscreen.entity.BannerAd;
 import com.fyp.mrisecondscreen.utils.OffersAdapter;
-import com.fyp.mrisecondscreen.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 
-public class OffersActivity extends AppCompatActivity {
+public class OffersActivity extends NavDrawerActivity {
 
     DatabaseHelper databaseHelper;
 
@@ -33,12 +35,28 @@ public class OffersActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_offers);
 
+        /* Code for Nav Drawer Handling */
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        navigationView.setCheckedItem(R.id.nav_syncedads);
+    /* Code for Nav Drawer Handling */
+
         /// Construct the data source
         ArrayList<BannerAd> arrayOfOffers = new ArrayList<BannerAd>();
         // Create the adapter to convert the array to views
         final OffersAdapter adapter = new OffersAdapter(OffersActivity.this, arrayOfOffers);
         // Attach the adapter to a ListView
-        final ListView listView = (ListView) findViewById(R.id.list_offers);
+        final ListView listView = findViewById(R.id.list_offers);
         listView.setAdapter(adapter);
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         listView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
@@ -128,12 +146,24 @@ public class OffersActivity extends AppCompatActivity {
         //Load Offers from DB
         databaseHelper = DatabaseHelper.getInstance(this);
         List<BannerAd> offers = databaseHelper.getAllOffers();
-        Log.e("OFFERACTIVITY !!",offers.get(0).getOfferImage());
+        try{
+            Log.e("OFFERACTIVITY !!",offers.get(0).getOfferImage());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
         // Add DB offers to adapter
         adapter.addAll(offers);
 
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(OffersActivity.this, MainActivity.class);
+        startActivity(intent);
+        OffersActivity.this.finish();
     }
 
 

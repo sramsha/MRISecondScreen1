@@ -12,9 +12,9 @@
             android:icon="@drawable/ic_grade_black_18px"
             android:title="Ads Viewed" />
         <item
-            android:id="@+id/nav_coupons"
+            android:id="@+id/nav_supported_ads"
             android:icon="@drawable/ic_check_circle_black_18px"
-            android:title="Coupons Redeemed" />
+            android:title="Ads Supported" />
         <item
             android:id="@+id/nav_profile"
             android:icon="@drawable/ic_account_circle_black_18px"

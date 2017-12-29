@@ -34,12 +34,19 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.facebook.login.LoginManager;
 import com.fyp.mrisecondscreen.R;
 import com.fyp.mrisecondscreen.db.DatabaseHelper;
 import com.fyp.mrisecondscreen.entity.BannerAd;
 import com.fyp.mrisecondscreen.utils.AudioRecorder;
 import com.fyp.mrisecondscreen.utils.ImageUtil;
+import com.fyp.mrisecondscreen.utils.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,6 +63,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import static android.Manifest.permission.RECORD_AUDIO;
@@ -64,9 +75,10 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 @SuppressWarnings("ALL")
 public class MainActivity extends NavDrawerActivity {
 
+    User user;
     public static final int RequestPermissionCode = 1;
     private static final String SERVER_MATCH_URL = "http://lb-89089438.us-east-2.elb.amazonaws.com/api/clip/match";
-    private static final String SERVER_MEDIA_URL = "http://lb-89089438.us-east-2.elb.amazonaws.com/api/uploads/images";
+    private static final String SERVER_MEDIA_URL = "http://lb-89089438.us-east-2.elb.amazonaws.com/admin/uploads/images/";
     private static TextView recordText;
     private static ProgressBar progressBar;
     private static ImageView mic;
@@ -82,6 +94,9 @@ public class MainActivity extends NavDrawerActivity {
 
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_main);
+
+        user = new User(getApplicationContext());
+        user.updateProfile();
         isAppRunning = true;
 
         if (android.os.Build.VERSION.SDK_INT > 9)
@@ -135,7 +150,7 @@ public class MainActivity extends NavDrawerActivity {
                         progressBar.setVisibility(View.VISIBLE);
 
                         // start timer for 10sec and then stop recorder
-                        CountDownTimer countDowntimer = new CountDownTimer(5000, 1000) {
+                        CountDownTimer countDowntimer = new CountDownTimer(10000, 1000) {
                             public void onTick(long millisUntilFinished) {
                             }
 
@@ -183,6 +198,7 @@ public class MainActivity extends NavDrawerActivity {
                         TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
                         textView.setTextColor(Color.YELLOW);
                         snackbar.show();
+                        mic.setEnabled(true);
                     }
                 }
                 else {
@@ -288,7 +304,7 @@ public class MainActivity extends NavDrawerActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             Log.v(TAG, "Showing ProgressDIalog Passed");
-            p.setMessage("Getting your Offer");
+            p.setMessage("Fetching offers and discounts for you");
             p.setIndeterminate(false);
             p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             p.setCancelable(false);
@@ -436,7 +452,7 @@ public class MainActivity extends NavDrawerActivity {
 
                         //save offer
                         DatabaseHelper databaseHelper = DatabaseHelper.getInstance(this.ctx);
-                        long status = databaseHelper.addWithOnConflict(runningAd);
+                        final long status = databaseHelper.addWithOnConflict(runningAd);
                         if (-1 != status) {
                             Toast.makeText(ctx, "Offer saved successfully with ID of : " + status, Toast.LENGTH_SHORT).show();
                             //Get offer image from server and save locally
@@ -451,6 +467,7 @@ public class MainActivity extends NavDrawerActivity {
                             Toast.makeText(ctx, "Ad viewed already", Toast.LENGTH_SHORT).show();
                             // TODO: Handle further logic
                         }
+
 
                         // Make a AdDialog
                         //AdDialog adDialog = new AdDialog();
@@ -492,8 +509,49 @@ public class MainActivity extends NavDrawerActivity {
 
                             }
                         });
+
+                            RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+                            final String URL_OFFERS_VIEWED = "http://lb-89089438.us-east-2.elb.amazonaws.com/api/offers/view";
+
+                            StringRequest postRequest = new StringRequest(Request.Method.POST, URL_OFFERS_VIEWED,
+                                    new Response.Listener<String>()
+                                    {
+                                        @Override
+                                        public void onResponse(String response) {
+                                            // response
+                                            Log.d("POST api/offers/view", response);
+                                        }
+                                    },
+                                    new Response.ErrorListener()
+                                    {
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
+                                            // error
+                                            Log.d("POST api/offers/view", error.toString());
+                                        }
+                                    }
+                                ) {
+                                @Override
+                                protected Map<String, String> getParams()
+                                {
+                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+                                    String currentDateTime = sdf.format(new Date());
+
+                                    Map<String, String>  params = new HashMap<String, String>();
+
+                                    if (status==-1)
+                                        params.put("offerid", String.valueOf(runningAd.getOfferId()));
+                                    else
+                                        params.put("offerid", String.valueOf(status));
+                                    params.put("userid", user.getID());
+                                    params.put("watched_at", currentDateTime);
+
+                                    return params;
+                                }
+                            };
+                            queue.add(postRequest);
                     } else {
-                        Toast.makeText(ctx, "Fingerprint not in DB or too much noise", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ctx, "The Brand/Content not enrolled with us as yet", Toast.LENGTH_SHORT).show();
                     }
 
                     //Toast.makeText(ctx,"Offer saved successfully",Toast.LENGTH_SHORT).show();
@@ -535,6 +593,7 @@ public class MainActivity extends NavDrawerActivity {
                 return (urlc.getResponseCode() == 200);
             } catch (IOException e) {
                 Log.e("Internet Error", "Error: ", e);
+                return false;
             }
         } else {
             Log.d("Internet Error", "No network present");
