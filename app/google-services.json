@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "266098508631",
+    "firebase_url": "https://media-icon.firebaseio.com",
+    "project_id": "media-icon",
+    "storage_bucket": "media-icon.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:266098508631:android:0bd659eb4eed9d2d",
+        "android_client_info": {
+          "package_name": "com.fyp.mrisecondscreen"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "266098508631-umm2kt4kveop9cb13i13rs9hjrkrd1q9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjs0ljEiopOOgWxQ7oRWV-kP9J7Lg3dp8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
