@@ -1,6 +1,7 @@
 package com.fyp.mrisecondscreen.activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -62,6 +63,9 @@ public class NavDrawerActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Toast.makeText(getApplicationContext(), "Proceeding to the Media Icon website for the latest updates", Toast.LENGTH_SHORT).show();
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.mediaicon.net/privacy-policy/"));
+            startActivity(browserIntent);
             return true;
         }
 
