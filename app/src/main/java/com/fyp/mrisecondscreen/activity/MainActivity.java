@@ -81,6 +81,7 @@ public class MainActivity extends NavDrawerActivity {
     private static final String SERVER_MEDIA_URL = "http://lb-89089438.us-east-2.elb.amazonaws.com/admin/uploads/images/";
     private static TextView recordText;
     private static ProgressBar progressBar;
+    private static ImageView couponPicture;
     private static ImageView mic;
 
     private static AudioRecorder recorder;
@@ -125,6 +126,7 @@ public class MainActivity extends NavDrawerActivity {
         mic = findViewById(R.id.mic);
         recordText = findViewById(R.id.recordText);
         progressBar = findViewById(R.id.progressBar);
+        couponPicture = findViewById(R.id.coupon_picture);
 
 
 
@@ -146,6 +148,8 @@ public class MainActivity extends NavDrawerActivity {
                             e.printStackTrace();
                         }
                         //display hidden 'recording' label
+
+                        couponPicture.setVisibility(View.INVISIBLE);
                         recordText.setVisibility(View.VISIBLE);
                         progressBar.setVisibility(View.VISIBLE);
 
@@ -158,6 +162,7 @@ public class MainActivity extends NavDrawerActivity {
                                 try {
                                     //Toast.makeText(getApplicationContext(), "Sending audio to Server", Toast.LENGTH_LONG).show();
                                     recorder.stop();
+                                    couponPicture.setVisibility(View.VISIBLE);
                                     recordText.setVisibility(View.GONE);
                                     progressBar.setVisibility(View.GONE);
                                     mic.setEnabled(true);

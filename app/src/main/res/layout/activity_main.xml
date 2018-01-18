@@ -29,7 +29,7 @@
 
             <ImageButton
                 android:layout_height="200dp"
-                android:src="@drawable/scan2"
+                android:src="@drawable/scan3"
                 android:id="@+id/mic"
                 android:layout_width="200dp"
                 android:scaleType="centerCrop"
@@ -57,6 +57,12 @@
                 android:id="@+id/progressBar"
                 android:visibility="gone"
                 />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/coupon_picture"
+                android:id="@+id/coupon_picture" />
 
         </RelativeLayout>
         <!-- Our activity xml here -->
