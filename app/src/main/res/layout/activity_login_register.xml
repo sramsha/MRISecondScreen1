@@ -52,7 +52,7 @@
                 <ImageView
                     android:layout_width="120dp"
                     android:layout_height="120dp"
-                    android:background="@drawable/logo"
+                    android:background="@drawable/media_icon"
                     android:layout_marginTop="15dp"
                     android:layout_gravity="center_horizontal"
                     android:contentDescription="Application Logo" />

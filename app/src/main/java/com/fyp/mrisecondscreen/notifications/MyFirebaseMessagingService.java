@@ -61,7 +61,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             //Not using NotificationCompat yet because the support library isn't updated yet
             Notification notification = new Notification.Builder(this,channelId)
                     .setLargeIcon(bitmap)
-                    .setSmallIcon(R.drawable.logo)
+                    .setSmallIcon(R.drawable.media_icon)
                     .setContentTitle(remoteMessage.getData().get("title"))
                     .setStyle(new Notification.BigPictureStyle()
                             .setSummaryText(remoteMessage.getData().get("message"))
@@ -75,7 +75,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         } else{
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                     .setLargeIcon(bitmap)
-                    .setSmallIcon(R.drawable.logo)
+                    .setSmallIcon(R.drawable.media_icon)
                     .setContentTitle(remoteMessage.getData().get("title"))
                     .setStyle(new NotificationCompat.BigPictureStyle()
                             .setSummaryText(remoteMessage.getData().get("message"))

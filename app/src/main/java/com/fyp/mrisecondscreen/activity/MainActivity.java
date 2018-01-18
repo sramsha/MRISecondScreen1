@@ -237,7 +237,7 @@ public class MainActivity extends NavDrawerActivity {
         alertDialog.setNegativeButton("No", null);
 
         alertDialog.setMessage("Do you want to exit the application?");
-        alertDialog.setTitle("Touch Point");
+        alertDialog.setTitle("Media Icon");
         alertDialog.show();
         isAppRunning = false;
     }
