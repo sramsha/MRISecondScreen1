@@ -28,6 +28,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -91,6 +94,8 @@ public class MainActivity extends NavDrawerActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
 
+        final Animation animRotate = AnimationUtils.loadAnimation(this, R.anim.anim_rotate);
+
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
         super.onCreate(savedInstanceState);
@@ -140,6 +145,8 @@ public class MainActivity extends NavDrawerActivity {
 
                     if (checkActiveInternetConnection())
                     {
+                        v.startAnimation(animRotate);
+                        //buttonAnimation(v, 5000);
                         recorder = new AudioRecorder();
                         // start recoder
                         try {
@@ -604,6 +611,12 @@ public class MainActivity extends NavDrawerActivity {
             Log.d("Internet Error", "No network present");
         }
         return false;
+    }
+
+    private void buttonAnimation(View v, int i) {
+        AlphaAnimation buttonClick = new AlphaAnimation(1.0F, 0.1F);
+        buttonClick.setDuration(i);
+        v.startAnimation(buttonClick);
     }
 
 }
