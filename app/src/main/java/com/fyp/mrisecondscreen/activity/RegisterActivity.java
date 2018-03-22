@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -189,6 +190,7 @@ public class RegisterActivity extends AppCompatActivity {
                             user.setPassword(password);
                             user.setGender(gender);
                             user.setMAC(mac);
+                            buttonAnimation(v, 3500);
                             RegisterRequest registerRequest = new RegisterRequest(user, responseListener);
                             RequestQueue queue = Volley.newRequestQueue(RegisterActivity.this);
                             queue.add(registerRequest);
@@ -331,5 +333,11 @@ public class RegisterActivity extends AppCompatActivity {
             Log.d("Internet Error", "No network present");
         }
         return false;
+    }
+
+    private void buttonAnimation(View v, int i) {
+        AlphaAnimation buttonClick = new AlphaAnimation(1.0F, 0.1F);
+        buttonClick.setDuration(i);
+        v.startAnimation(buttonClick);
     }
 }

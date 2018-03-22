@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -53,33 +54,6 @@ public class LoginActivity extends AppCompatActivity {
     CallbackManager callbackmanager;
     User user;
 
-    public static String getMacAddress() {
-        try {
-            List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
-            for (NetworkInterface nif : all) {
-                if (!nif.getName().equalsIgnoreCase("wlan0")) continue;
-
-                byte[] macBytes = nif.getHardwareAddress();
-                if (macBytes == null) {
-                    return "";
-                }
-
-                StringBuilder res1 = new StringBuilder();
-                for (byte b : macBytes) {
-                    res1.append(Integer.toHexString(b & 0xFF)).append(":");
-                }
-
-                if (res1.length() > 0) {
-                    res1.deleteCharAt(res1.length() - 1);
-                }
-                return res1.toString();
-            }
-        } catch (Exception ex) {
-            //handle exception
-        }
-        return "";
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,11 +75,21 @@ public class LoginActivity extends AppCompatActivity {
         FacebookSdk.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
 
         login_button_FB = findViewById(R.id.login_button_FB);
+
+        login_button_FB.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick (View v){
+                buttonAnimation(v, 3500);
+            }
+        });
+
         login_button_FB.setReadPermissions(Arrays.asList(
                 "email", "public_profile", "user_birthday", "user_relationships"));
 
         callbackmanager = CallbackManager.Factory.create();
         login_button_FB.registerCallback(callbackmanager, new FacebookCallback<LoginResult>() {
+
             @Override
             public void onSuccess(final LoginResult loginResult) {
                 GraphRequest graphRequest = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
@@ -130,6 +114,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onCancel() {
                 /* if needed */
+                Toast.makeText(LoginActivity.this, "Facebook login cancelled", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -182,6 +167,8 @@ public class LoginActivity extends AppCompatActivity {
                         login_username.setText("");
                         login_username.setFocusable(true);
                         login_username.requestFocus();*/
+
+                        buttonAnimation(v, 3500);
                         LoginHandler(username, password);
                     }
                     else
@@ -391,6 +378,39 @@ public class LoginActivity extends AppCompatActivity {
             Log.d("Internet Error", "No network present");
         }
         return false;
+    }
+
+    public static String getMacAddress() {
+        try {
+            List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface nif : all) {
+                if (!nif.getName().equalsIgnoreCase("wlan0")) continue;
+
+                byte[] macBytes = nif.getHardwareAddress();
+                if (macBytes == null) {
+                    return "";
+                }
+
+                StringBuilder res1 = new StringBuilder();
+                for (byte b : macBytes) {
+                    res1.append(Integer.toHexString(b & 0xFF)).append(":");
+                }
+
+                if (res1.length() > 0) {
+                    res1.deleteCharAt(res1.length() - 1);
+                }
+                return res1.toString();
+            }
+        } catch (Exception ex) {
+            //handle exception
+        }
+        return "";
+    }
+
+    private void buttonAnimation(View v, int i) {
+        AlphaAnimation buttonClick = new AlphaAnimation(1.0F, 0.1F);
+        buttonClick.setDuration(i);
+        v.startAnimation(buttonClick);
     }
 
 }
