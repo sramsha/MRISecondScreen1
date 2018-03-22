@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -43,7 +44,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareHashtag;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.fyp.mrisecondscreen.R;
 import com.fyp.mrisecondscreen.db.DatabaseHelper;
 import com.fyp.mrisecondscreen.entity.BannerAd;
@@ -100,6 +109,8 @@ public class MainActivity extends NavDrawerActivity {
 
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_main);
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
 
         user = new User(getApplicationContext());
         user.updateProfile();
@@ -221,7 +232,6 @@ public class MainActivity extends NavDrawerActivity {
             }
         });
 
-
     }
 
 
@@ -321,7 +331,8 @@ public class MainActivity extends NavDrawerActivity {
             //p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             p.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             p.setCancelable(true);
-            //p.setCanceledOnTouchOutside(true);
+            p.setCanceledOnTouchOutside(false);
+            p.setMax(100);
             p.show();
             //Toast.makeText(getApplicationContext(), "Here to Server", Toast.LENGTH_LONG).show();
         }
@@ -368,6 +379,7 @@ public class MainActivity extends NavDrawerActivity {
 
             } else {
                 try {
+                    p.setProgress(10);
                     FileInputStream fileInputStream = new FileInputStream(selectedFile);
                     URL url = new URL(this.url);
                     connection = (HttpURLConnection) url.openConnection();
@@ -379,7 +391,7 @@ public class MainActivity extends NavDrawerActivity {
                     connection.setRequestProperty("ENCTYPE", "multipart/form-data");
                     connection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
                     connection.setRequestProperty("uploaded_file", filename);
-
+                    p.setProgress(20);
                     //creating new dataoutputstream
                     dataOutputStream = new DataOutputStream(connection.getOutputStream());
 
@@ -392,6 +404,8 @@ public class MainActivity extends NavDrawerActivity {
 
                     Log.v(TAG, "Sent file");
 
+                    p.setProgress(50);
+
                     //returns no. of bytes present in fileInputStream
                     bytesAvailable = fileInputStream.available();
                     //selecting the buffer size as minimum of available bytes or 1 MB
@@ -402,6 +416,7 @@ public class MainActivity extends NavDrawerActivity {
                     //reads bytes from FileInputStream(from 0th index of buffer to buffersize)
                     bytesRead = fileInputStream.read(buffer, 0, bufferSize);
 
+                    p.setProgress(60);
                     //loop repeats till bytesRead = -1, i.e., no bytes are left to read
                     while (bytesRead > 0) {
                         //write the bytes read from inputstream
@@ -411,6 +426,7 @@ public class MainActivity extends NavDrawerActivity {
                         bytesRead = fileInputStream.read(buffer, 0, bufferSize);
                     }
 
+                    p.setProgress(70);
                     dataOutputStream.writeBytes(lineEnd);
                     dataOutputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
 
@@ -424,6 +440,8 @@ public class MainActivity extends NavDrawerActivity {
                     fileInputStream.close();
                     dataOutputStream.flush();
                     dataOutputStream.close();
+
+                    p.setProgress(100);
 
                     return serverResponseMessage;
 
@@ -521,6 +539,54 @@ public class MainActivity extends NavDrawerActivity {
                                 dialog.dismiss();
                                 finish();
 
+                            }
+                        });
+
+                        Button fb_share = dialog.findViewById(R.id.banner_fb_share);
+                        fb_share.setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+                                /*ShareLinkContent shareLinkContent = new ShareLinkContent.Builder()
+                                        .setContentTitle("Media Icon - Catch & Win")
+                                        .setContentDescription("Ad details") // runningAd.getOfferTitle()
+                                        //.setContentUrl(Uri.parse("http://mediaicon.net/index.html"))
+                                        //.setImageUrl(Uri.parse("http://mediaicon.net/wp-content/uploads/2018/01/Android_5.png"))
+                                        .build();
+                                ShareDialog.show(MainActivity.this, shareLinkContent);*/
+
+                                CallbackManager callbackManager = CallbackManager.Factory.create();
+                                final ShareDialog shareDialog = new ShareDialog(MainActivity.this);
+
+                                shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+
+                                    @Override
+                                    public void onSuccess(Sharer.Result result) {
+                                        Toast.makeText(ctx, "Successfully shared", Toast.LENGTH_LONG).show();
+                                    }
+
+                                    @Override
+                                    public void onError(FacebookException error) {
+                                        Toast.makeText(ctx, "Error on Sharing", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    @Override
+                                    public void onCancel() {
+                                        Toast.makeText(ctx, "Sharing cancelled", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+
+
+                                if (ShareDialog.canShow(ShareLinkContent.class)) {
+                                    ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                                            .setQuote("I just caught " + runningAd.getOfferTitle() + "\n" + runningAd.getOfferContent())
+                                            .setContentUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.fyp.mrisecondscreen"))
+                                            .setShareHashtag(new ShareHashtag.Builder()
+                                                    .setHashtag("#MediaIcon")
+                                                    .build())
+                                            .build();
+                                    shareDialog.show(linkContent);
+                                }
                             }
                         });
 

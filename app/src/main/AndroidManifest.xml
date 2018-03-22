@@ -77,6 +77,10 @@
 
         <activity android:name=".activity.SupportedAds">
         </activity>
+
+        <provider android:authorities="com.facebook.app.FacebookContentProvider360259361089404"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true"/>
     </application>
 
 </manifest>

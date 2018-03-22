@@ -168,7 +168,7 @@ public class LoginActivity extends AppCompatActivity {
                         login_username.setFocusable(true);
                         login_username.requestFocus();*/
 
-                        buttonAnimation(v, 3500);
+                        buttonAnimation(v, 2500);
                         LoginHandler(username, password);
                     }
                     else
