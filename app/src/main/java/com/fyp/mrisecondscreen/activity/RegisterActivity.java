@@ -1,5 +1,8 @@
 package com.fyp.mrisecondscreen.activity;
 
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -8,12 +11,12 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -44,6 +47,14 @@ public class RegisterActivity extends AppCompatActivity {
     SessionManagement session;
     User user;
 
+    /* Birthday picker */
+    private EditText register_age;
+    private int mYear;
+    private int mMonth;
+    private int mDay;
+    static final int DATE_DIALOG_ID = 0;
+    /* Birthday picker */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +68,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         final EditText register_name = findViewById(R.id.register_name);
         final EditText register_username = findViewById(R.id.register_username);
-        final EditText register_age = findViewById(R.id.register_age);
+        register_age = findViewById(R.id.register_age);
         final EditText register_email = findViewById(R.id.register_email);
         final EditText register_password = findViewById(R.id.register_password);
         final RadioButton register_male = findViewById(R.id.register_male);
@@ -144,7 +155,7 @@ public class RegisterActivity extends AppCompatActivity {
                     register_female.setFocusable(true);
                     register_female.requestFocus();
                 }
-                else
+                /*else
                 {
                     int ageValidated = validateAge(age);
 
@@ -177,8 +188,9 @@ public class RegisterActivity extends AppCompatActivity {
                         Toast.makeText(RegisterActivity.this, "Incorrect value of the Year (MM/DD/YYYY)", Toast.LENGTH_LONG).show();
                         register_age.setFocusable(true);
                         register_age.requestFocus();
-                    }
-                    else if (ageValidated == 6)
+                    } */
+                    //else if (ageValidated == 6)
+                    else
                     {
 
                         if (checkActiveInternetConnection())
@@ -215,7 +227,6 @@ public class RegisterActivity extends AppCompatActivity {
                             snackbar.show();
                         }
                     }
-                }
 
             }
         });
@@ -238,6 +249,17 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        register_age.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) { showDialog(DATE_DIALOG_ID); }
+        });
+
+                /* DATE PICKER */
+        // get the current date
+        final Calendar c = Calendar.getInstance();
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
+                /* DATE PICKER */
 
     }
 
@@ -274,7 +296,7 @@ public class RegisterActivity extends AppCompatActivity {
     }*/
 
     public int validateAge(String age) {
-        if (age.length() < 10)
+        if (age.length() < 8)
             return 1;
 
         if ((age.charAt(2) == '/') && (age.charAt(5) == '/'))
@@ -340,4 +362,40 @@ public class RegisterActivity extends AppCompatActivity {
         buttonClick.setDuration(i);
         v.startAnimation(buttonClick);
     }
+
+    //return date picker dialog
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+            case DATE_DIALOG_ID:
+                return new DatePickerDialog(this, mDateSetListener, mYear, mMonth, mDay);
+        }
+        return null;
+    }
+
+    //update month day year
+    private void updateDisplay() {
+        register_age.setText(//this is the edit text where you want to show the selected date
+                new StringBuilder()
+                        // Month is 0 based so add 1
+                        .append(mMonth + 1).append("/")
+                        .append(mDay).append("/")
+                        .append(mYear).append(""));
+
+
+        //.append(mMonth + 1).append("-")
+        //.append(mDay).append("-")
+        //.append(mYear).append(" "));
+    }
+
+    // the call back received when the user "sets" the date in the dialog
+    private DatePickerDialog.OnDateSetListener mDateSetListener =
+            new DatePickerDialog.OnDateSetListener() {
+                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                    mYear = year;
+                    mMonth = monthOfYear;
+                    mDay = dayOfMonth;
+                    updateDisplay();
+                }
+            };
 }

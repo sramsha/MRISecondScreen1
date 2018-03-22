@@ -86,7 +86,8 @@
                     android:id="@+id/register_age"
                     android:singleLine="true"
                     android:maxLength="10"
-                    android:inputType="date" />
+                    android:clickable="true"
+                    android:focusable="false" />
 
                 <EditText
                     android:layout_width="fill_parent"
