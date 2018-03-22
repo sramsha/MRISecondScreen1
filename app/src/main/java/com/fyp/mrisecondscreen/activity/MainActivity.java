@@ -317,9 +317,11 @@ public class MainActivity extends NavDrawerActivity {
             super.onPreExecute();
             Log.v(TAG, "Showing ProgressDIalog Passed");
             p.setMessage("Fetching offers and discounts for you");
-            p.setIndeterminate(false);
-            p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            p.setCancelable(false);
+            p.setIndeterminate(true);
+            //p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            p.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            p.setCancelable(true);
+            //p.setCanceledOnTouchOutside(true);
             p.show();
             //Toast.makeText(getApplicationContext(), "Here to Server", Toast.LENGTH_LONG).show();
         }
