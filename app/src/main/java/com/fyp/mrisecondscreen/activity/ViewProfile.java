@@ -1,5 +1,7 @@
 package com.fyp.mrisecondscreen.activity;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -16,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +42,14 @@ import java.util.Objects;
 public class ViewProfile extends NavDrawerActivity {
 
     User user;
+
+    /* Birthday picker */
+    private EditText birthday;
+    private int mYear;
+    private int mMonth;
+    private int mDay;
+    static final int DATE_DIALOG_ID = 0;
+    /* Birthday picker */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +89,7 @@ public class ViewProfile extends NavDrawerActivity {
         final EditText password = findViewById(R.id.password);
         final EditText gender = findViewById(R.id.gender);
         final EditText relationshipStatus = findViewById(R.id.relationshipStatus);
-        final EditText birthday = findViewById(R.id.birthday);
+        birthday = findViewById(R.id.birthday);
         final EditText location = findViewById(R.id.location);
         final EditText mobileNumber = findViewById(R.id.mobileNumber);
         final EditText city = findViewById(R.id.city);
@@ -158,122 +169,99 @@ public class ViewProfile extends NavDrawerActivity {
                 }
                 else
                 {
-                    int ageValidated = validateAge(bday);
-
-                    if (ageValidated == 1)
+                    if (checkActiveInternetConnection())
                     {
-                        Toast.makeText(ViewProfile.this, "Incomplete Birth date (required: MM/DD/YYYY)", Toast.LENGTH_LONG).show();
-                        birthday.setFocusable(true);
-                        birthday.requestFocus();
-                    }
-                    else if (ageValidated == 2)
-                    {
-                        Toast.makeText(ViewProfile.this, "Invalid birthday format (use MM/DD/YYYY)", Toast.LENGTH_LONG).show();
-                        birthday.setFocusable(true);
-                        birthday.requestFocus();
-                    }
-                    else if (ageValidated == 3)
-                    {
-                        Toast.makeText(ViewProfile.this, "Incorrect value of the Month (MM/DD/YYYY)", Toast.LENGTH_LONG).show();
-                        birthday.setFocusable(true);
-                        birthday.requestFocus();
-                    }
-                    else if (ageValidated == 4)
-                    {
-                        Toast.makeText(ViewProfile.this, "Incorrect value of the Day (MM/DD/YYYY)", Toast.LENGTH_LONG).show();
-                        birthday.setFocusable(true);
-                        birthday.requestFocus();
-                    }
-                    else if (ageValidated == 5)
-                    {
-                        Toast.makeText(ViewProfile.this, "Incorrect value of the Year (MM/DD/YYYY)", Toast.LENGTH_LONG).show();
-                        birthday.setFocusable(true);
-                        birthday.requestFocus();
-                    }
-                    else if (ageValidated == 6)
-                    {
-                        if (checkActiveInternetConnection())
-                        {
-                            user.setName(nam);
-                            user.setEmail(emai);
-                            user.setID(id);
-                            user.setPassword(passwor);
-                            user.setGender(gende);
-                            user.setRelationshipStatus(relationship_status);
-                            user.setBirthday(bday);
-                            user.setLocation(loc);
-                            user.setMobileNumber(mobilenum);
-                            user.setCity(cit);
-                            user.setCountry(countr);
-                            user.updateProfile();
+                        user.setName(nam);
+                        user.setEmail(emai);
+                        user.setID(id);
+                        user.setPassword(passwor);
+                        user.setGender(gende);
+                        user.setRelationshipStatus(relationship_status);
+                        user.setBirthday(bday);
+                        user.setLocation(loc);
+                        user.setMobileNumber(mobilenum);
+                        user.setCity(cit);
+                        user.setCountry(countr);
+                        user.updateProfile();
 
-                        /*Response Listener */
-                            Response.Listener<String> responseListener = new Response.Listener<String>() {
+                    /*Response Listener */
+                        Response.Listener<String> responseListener = new Response.Listener<String>() {
 
 
-                                @Override
-                                public void onResponse(String response) {
+                            @Override
+                            public void onResponse(String response) {
 
-                                    JSONObject jsonResponse;
+                                JSONObject jsonResponse;
 
-                                    String serverReply = null;
-                                    try {
-                                        jsonResponse = new JSONObject(response);
-                                        serverReply = jsonResponse.getString("status");
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-
-                                    if (Objects.equals(serverReply, "PROFILE_UPDATED")) {
-                                        Toast.makeText(getApplicationContext(), "Profile updated successfully!", Toast.LENGTH_LONG).show();
-
-                                        user.updateSession();
-                                        if (user.isProfileComplete())
-                                            Toast.makeText(getApplicationContext(), "Your profile is now complete!", Toast.LENGTH_LONG).show();
-
-                                    } else if (Objects.equals(serverReply, "FAILED")) {
-                                        Toast.makeText(getApplicationContext(), "Your profile information is already updated!", Toast.LENGTH_LONG).show();
-                                    } else {
-                                        AlertDialog.Builder builder = new AlertDialog.Builder(ViewProfile.this);
-                                        builder.setMessage("Profile Updation failed - unable to connect to the server!")
-                                                .setNegativeButton("Retry", null)
-                                                .create()
-                                                .show();
-                                        Toast.makeText(getApplicationContext(), "Server Response: " + serverReply, Toast.LENGTH_LONG).show();
-                                    }
-
+                                String serverReply = null;
+                                try {
+                                    jsonResponse = new JSONObject(response);
+                                    serverReply = jsonResponse.getString("status");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
                                 }
-                            };
-                        /*Response Listener */
 
-                        /* make profile update request*/
-                            ProfileUpdateRequest profileUpdateRequest = new ProfileUpdateRequest(user, responseListener);
-                            RequestQueue queue = Volley.newRequestQueue(ViewProfile.this);
-                            queue.add(profileUpdateRequest);
-                        }
-                        else
-                        {
-                            Snackbar snackbar = Snackbar
-                                    .make(findViewById(R.id.coordinatorLayout), "No internet connection!", Snackbar.LENGTH_LONG)
-                                    .setAction("CLOSE", new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                        }
-                                    });
+                                if (Objects.equals(serverReply, "PROFILE_UPDATED")) {
+                                    Toast.makeText(getApplicationContext(), "Profile updated successfully!", Toast.LENGTH_LONG).show();
 
-                            // Changing message text color
-                            snackbar.setActionTextColor(Color.RED);
+                                    user.updateSession();
+                                    if (user.isProfileComplete())
+                                        Toast.makeText(getApplicationContext(), "Your profile is now complete!", Toast.LENGTH_LONG).show();
 
-                            // Changing action button text color
-                            View sbView = snackbar.getView();
-                            TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
-                            textView.setTextColor(Color.YELLOW);
-                            snackbar.show();
-                        }
+                                } else if (Objects.equals(serverReply, "FAILED")) {
+                                    Toast.makeText(getApplicationContext(), "Your profile information is already updated!", Toast.LENGTH_LONG).show();
+                                } else {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(ViewProfile.this);
+                                    builder.setMessage("Profile Updation failed - unable to connect to the server!")
+                                            .setNegativeButton("Retry", null)
+                                            .create()
+                                            .show();
+                                    Toast.makeText(getApplicationContext(), "Server Response: " + serverReply, Toast.LENGTH_LONG).show();
+                                }
+
+                            }
+                        };
+                    /*Response Listener */
+
+                    /* make profile update request*/
+                        ProfileUpdateRequest profileUpdateRequest = new ProfileUpdateRequest(user, responseListener);
+                        RequestQueue queue = Volley.newRequestQueue(ViewProfile.this);
+                        queue.add(profileUpdateRequest);
+                    }
+                    else
+                    {
+                        Snackbar snackbar = Snackbar
+                                .make(findViewById(R.id.coordinatorLayout), "No internet connection!", Snackbar.LENGTH_LONG)
+                                .setAction("CLOSE", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                    }
+                                });
+
+                        // Changing message text color
+                        snackbar.setActionTextColor(Color.RED);
+
+                        // Changing action button text color
+                        View sbView = snackbar.getView();
+                        TextView textView = sbView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(Color.YELLOW);
+                        snackbar.show();
                     }
                 }
             }
         });
+
+        birthday.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) { showDialog(DATE_DIALOG_ID); }
+        });
+
+                /* DATE PICKER */
+        // get the current date
+        final Calendar c = Calendar.getInstance();
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
+                /* DATE PICKER */
 
     }
 
@@ -345,4 +333,41 @@ public class ViewProfile extends NavDrawerActivity {
         }
         return false;
     }
+
+
+    //return date picker dialog
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+            case DATE_DIALOG_ID:
+                return new DatePickerDialog(this, mDateSetListener, mYear, mMonth, mDay);
+        }
+        return null;
+    }
+
+    //update month day year
+    private void updateDisplay() {
+        birthday.setText(//this is the edit text where you want to show the selected date
+                new StringBuilder()
+                        // Month is 0 based so add 1
+                        .append(mMonth + 1).append("/")
+                        .append(mDay).append("/")
+                        .append(mYear).append(""));
+
+
+        //.append(mMonth + 1).append("-")
+        //.append(mDay).append("-")
+        //.append(mYear).append(" "));
+    }
+
+    // the call back received when the user "sets" the date in the dialog
+    private DatePickerDialog.OnDateSetListener mDateSetListener =
+            new DatePickerDialog.OnDateSetListener() {
+                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                    mYear = year;
+                    mMonth = monthOfYear;
+                    mDay = dayOfMonth;
+                    updateDisplay();
+                }
+            };
 }

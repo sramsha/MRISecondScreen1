@@ -161,7 +161,10 @@
                                 android:layout_height="wrap_content"
                                 android:singleLine="true"
                                 android:drawableTint="#FF4081"
-                                android:hint="Birthday" />
+                                android:hint="Birthday"
+                                android:maxLength="10"
+                                android:clickable="true"
+                                android:focusable="false" />
                         </android.support.design.widget.TextInputLayout>
 
                         <android.support.design.widget.TextInputLayout
