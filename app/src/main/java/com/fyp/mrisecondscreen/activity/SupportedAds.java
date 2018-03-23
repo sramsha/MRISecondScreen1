@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -17,6 +18,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.fyp.mrisecondscreen.R;
+import com.fyp.mrisecondscreen.db.SupportedAdsDatabaseHelper;
+import com.fyp.mrisecondscreen.entity.Ads;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,11 +38,12 @@ public class SupportedAds extends NavDrawerActivity {
     ListView list;
     final HashMap<String, String> Offers = new HashMap<>();
 
+    public SupportedAdsDatabaseHelper db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_supported_ads);
-        list = findViewById(R.id.list);
 
         /* Code for Nav Drawer Handling */
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -56,6 +60,26 @@ public class SupportedAds extends NavDrawerActivity {
 
         navigationView.setCheckedItem(R.id.nav_supported_ads);
     /* Code for Nav Drawer Handling */
+
+
+        list = findViewById(R.id.list);
+        db = new SupportedAdsDatabaseHelper(this);
+
+        List<HashMap<String, String>> listItems;
+        listItems = db.allAds();
+
+        if (listItems != null) {
+            Log.e("SUPPORTED ADS:", "Inside listitems!=null");
+            Log.e("Listitems:", listItems.toString());
+            SimpleAdapter adapter = new SimpleAdapter(getApplicationContext(), listItems, R.layout.supported_ad_list_item,
+                    new String[]{"First Line", "Second Line"},
+                    new int[]{R.id.text1, R.id.text2});
+
+            list.setAdapter(adapter);
+        }
+        else
+            Toast.makeText(getApplicationContext(), "Fetching list from the Server", Toast.LENGTH_LONG).show();
+
 
     /* Getting Supported Ads from the api*/
         RequestQueue queue = Volley.newRequestQueue(SupportedAds.this);
@@ -76,6 +100,8 @@ public class SupportedAds extends NavDrawerActivity {
                             Title = new String[jsonResponse.length()];
                             Content = new String[jsonResponse.length()];
 
+                            Ads ad = new Ads();
+
                             for(int i=0; i < jsonResponse.length(); i++)
                             {
                                 JSONObject jsonobject = jsonResponse.getJSONObject(i);
@@ -83,6 +109,11 @@ public class SupportedAds extends NavDrawerActivity {
                                 offerTitle = jsonobject.getString("offertitle");
 
                                 Offers.put(offerTitle, offerContent);
+
+                                ad.setId(i+1);
+                                ad.setTitle(offerTitle);
+                                ad.setContent(offerContent);
+                                db.addAd(ad);
                             }
 
                             List<HashMap<String, String>> listItems = new ArrayList<>();
@@ -123,9 +154,9 @@ public class SupportedAds extends NavDrawerActivity {
                 return new HashMap<>();
             }
         };
+
         queue.add(postRequest);
     /* Getting Supported Ads from the api*/
-
     }
 
     @Override
