@@ -132,4 +132,10 @@ public class SupportedAdsDatabaseHelper extends SQLiteOpenHelper {
         return i;
     }
 
+    public void deleteDB() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        this.onCreate(db);
+    }
+
 }

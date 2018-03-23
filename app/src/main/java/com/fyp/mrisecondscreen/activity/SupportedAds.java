@@ -102,6 +102,9 @@ public class SupportedAds extends NavDrawerActivity {
 
                             Ads ad = new Ads();
 
+                            // Delete the existing database and get new list from the api
+                            db.deleteDB();
+
                             for(int i=0; i < jsonResponse.length(); i++)
                             {
                                 JSONObject jsonobject = jsonResponse.getJSONObject(i);
