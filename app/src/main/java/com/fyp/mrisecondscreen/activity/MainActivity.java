@@ -101,6 +101,9 @@ public class MainActivity extends NavDrawerActivity {
     SharedPreferences sharedpreferences;
     public static boolean isAppRunning;
 
+    private static final int AD_WATCHED_FIRST_TIME = 5;
+    private static final int AD_WATCHED_ALREADY = 1;
+
     protected void onCreate(Bundle savedInstanceState) {
 
         final Animation animRotate = AnimationUtils.loadAnimation(this, R.anim.anim_rotate);
@@ -192,7 +195,6 @@ public class MainActivity extends NavDrawerActivity {
 
 
                                 } catch (IOException e) {
-                                    // TODO Auto-generated catch block
                                     e.printStackTrace();
                                 }
 
@@ -495,9 +497,14 @@ public class MainActivity extends NavDrawerActivity {
                             ImageUtil.downloadImage(getApplicationContext(), url, imageName, imgExtension);
 
                             Toast.makeText(ctx, "Image saved with name : " + imageName, Toast.LENGTH_SHORT).show();
+
+                            user.incrementPoints(AD_WATCHED_FIRST_TIME);
+                            user.updateSession();
+
                         } else {
                             Toast.makeText(ctx, "Ad viewed already", Toast.LENGTH_SHORT).show();
-                            // TODO: Handle further logic
+                            user.incrementPoints(AD_WATCHED_ALREADY);
+                            user.updateSession();
                         }
 
 

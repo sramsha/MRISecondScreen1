@@ -21,12 +21,14 @@ public class User {
     private String country;
     private SessionManagement session;
     public boolean loggedInFromFacebook;
+    private int points;
 
     public User(Context applicationContext) {
         session = new SessionManagement(applicationContext);
 
         name = email = ID = password = gender = relationshipStatus = birthday = location = MAC = mobileNumber = city = country = null;
         isProfileComplete = loggedInFromFacebook = false;
+        points = 0;
 
         if (session.isLoggedIn()) {
             // get user data from session
@@ -45,6 +47,7 @@ public class User {
             this.loggedInFromFacebook = Boolean.parseBoolean(user.get(SessionManagement.KEY_LOGGED_IN_FROM_FACEBOOK));
             this.city = user.get(SessionManagement.KEY_CITY);
             this.country = user.get(SessionManagement.KEY_COUNTRY);
+            this.points = Integer.parseInt(user.get(SessionManagement.KEY_POINTS));
         }
     }
 
@@ -162,7 +165,7 @@ public class User {
 
     public void updateSession() {
         session.createLoginSession(name, email, ID, password, gender, relationshipStatus, birthday,
-                location, MAC, mobileNumber, String.valueOf(loggedInFromFacebook), city, country);
+                location, MAC, mobileNumber, String.valueOf(loggedInFromFacebook), city, country, points);
     }
 
     public void updateProfile() {
@@ -196,5 +199,17 @@ public class User {
 
     public void setIsProfileComplete(boolean isProfileComplete) {
         this.isProfileComplete = isProfileComplete;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
+    public void incrementPoints(int points) {
+        this.points += points;
     }
 }

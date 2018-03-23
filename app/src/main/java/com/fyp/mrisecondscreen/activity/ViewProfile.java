@@ -94,6 +94,7 @@ public class ViewProfile extends NavDrawerActivity {
         final EditText mobileNumber = findViewById(R.id.mobileNumber);
         final EditText city = findViewById(R.id.city);
         final EditText country = findViewById(R.id.country);
+        final EditText points = findViewById(R.id.points);
         Button profileViewUpdate = findViewById(R.id.profileViewUpdate);
 
         name.setText(user.getName()+"", TextView.BufferType.EDITABLE);
@@ -107,6 +108,7 @@ public class ViewProfile extends NavDrawerActivity {
         mobileNumber.setText((!Objects.equals(user.getMobileNumber(), "null")) ? user.getMobileNumber() : "", TextView.BufferType.EDITABLE);
         city.setText((!Objects.equals(user.getCity(), "null")) ? user.getCity() : "", TextView.BufferType.EDITABLE);
         country.setText((!Objects.equals(user.getCountry(), "null")) ? user.getCountry() : "", TextView.BufferType.EDITABLE);
+        points.setText((Objects.equals(String.valueOf(user.getPoints()), "null")) ? "0": String.valueOf(user.getPoints()));
 
         if (user.loggedInFromFacebook)
         {

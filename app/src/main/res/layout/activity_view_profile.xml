@@ -227,6 +227,24 @@
                                 android:hint="Mobile Number" />
                         </android.support.design.widget.TextInputLayout>
 
+                        <android.support.design.widget.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="18dp">
+
+                            <EditText
+                                android:id="@+id/points"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:singleLine="true"
+                                android:drawableTint="#FF4081"
+                                android:inputType="none"
+                                android:focusable="false"
+                                android:enabled="false"
+                                android:gravity="center_horizontal"
+                                android:hint="Points" />
+                        </android.support.design.widget.TextInputLayout>
+
 
                         <Button
                             android:id="@+id/profileViewUpdate"
