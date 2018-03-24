@@ -7,7 +7,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,7 +15,6 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.fyp.mrisecondscreen.R;
 import com.fyp.mrisecondscreen.db.DatabaseHelper;
@@ -79,7 +77,7 @@ public class OffersActivity extends NavDrawerActivity {
                         return true;
 
                     case R.id.offer_delete:
-
+/*
                         // Calls getSelectedIds method from ListViewAdapter Class
                         SparseBooleanArray selected = listView.getCheckedItemPositions();
                         // Captures all selected ids with a loop
@@ -96,6 +94,7 @@ public class OffersActivity extends NavDrawerActivity {
                         }
 
                         // Close CAB
+*/
                         mode.finish();
                         return true;
 
@@ -126,6 +125,7 @@ public class OffersActivity extends NavDrawerActivity {
                 return false;
             }
         });
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 
             @Override

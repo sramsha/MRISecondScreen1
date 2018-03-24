@@ -569,24 +569,26 @@ public class MainActivity extends NavDrawerActivity {
 
                                     @Override
                                     public void onSuccess(Sharer.Result result) {
-                                        Toast.makeText(ctx, "Successfully shared", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), "Successfully shared", Toast.LENGTH_LONG).show();
+                                        Log.e("FB:SHARE", "SHARED SUCCESSFULLY!!!!!!!!!!!!!!!!!!");
+                                        //TODO: Give user some points
                                     }
 
                                     @Override
                                     public void onError(FacebookException error) {
-                                        Toast.makeText(ctx, "Error on Sharing", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getApplicationContext(), "Error on Sharing", Toast.LENGTH_SHORT).show();
                                     }
 
                                     @Override
                                     public void onCancel() {
-                                        Toast.makeText(ctx, "Sharing cancelled", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), "Sharing cancelled", Toast.LENGTH_LONG).show();
                                     }
                                 });
 
 
                                 if (ShareDialog.canShow(ShareLinkContent.class)) {
                                     ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                                            .setQuote("I just caught " + runningAd.getOfferTitle() + "\n" + runningAd.getOfferContent())
+                                            .setQuote("I just caught offer from " + runningAd.getOfferTitle() + ".\n" + runningAd.getOfferContent())
                                             .setContentUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.fyp.mrisecondscreen"))
                                             .setShareHashtag(new ShareHashtag.Builder()
                                                     .setHashtag("#MediaIcon")
@@ -632,6 +634,8 @@ public class MainActivity extends NavDrawerActivity {
                                         params.put("offerid", String.valueOf(status));
                                     params.put("userid", user.getID());
                                     params.put("watched_at", currentDateTime);
+                                    params.put("points", String.valueOf(user.getPoints()));
+                                    Log.e("POINTS:UPDATED", String.valueOf(user.getPoints()));
 
                                     return params;
                                 }

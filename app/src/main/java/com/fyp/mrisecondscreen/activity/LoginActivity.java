@@ -265,6 +265,17 @@ public class LoginActivity extends AppCompatActivity {
                         user.setIsProfileComplete(Boolean.parseBoolean(jsonResponse.getString("isProfileComplete")));
                         user.setCity(jsonResponse.getString("city"));
                         user.setCountry(jsonResponse.getString("country"));
+                        try{
+                            if (Objects.equals(String.valueOf(jsonResponse.getInt("points")), "null"))
+                                user.setPoints(0);
+                            else
+                                user.setPoints(Integer.parseInt(jsonResponse.getString("points")));
+                            Log.w("LOGIN:POINTS", String.valueOf(user.getPoints()));
+                        }
+                        catch (JSONException e) {
+                            e.printStackTrace();
+                            user.setPoints(0);
+                        }
 
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 /*                        intent.putExtra("username", ID);

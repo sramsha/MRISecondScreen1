@@ -44,7 +44,7 @@ public class SessionManagement {
         editor = pref.edit();
     }
 
-    public void createLoginSession(String name, String email, String username, String password, String gender, String relationship_status, String birthday, String location, String MAC, String mobile_number, String loggedInFromFacebook, String city, String country, int points) {
+    public void createLoginSession(String name, String email, String username, String password, String gender, String relationship_status, String birthday, String location, String MAC, String mobile_number, String loggedInFromFacebook, String city, String country, String points) {
         // Storing login value as TRUE
         editor.putBoolean(String.valueOf(IS_LOGIN), true);
         Log.e("SM[NAME]", name);
@@ -62,7 +62,7 @@ public class SessionManagement {
         editor.putString(KEY_LOGGED_IN_FROM_FACEBOOK, loggedInFromFacebook);
         editor.putString(KEY_CITY, city);
         editor.putString(KEY_COUNTRY, country);
-        editor.putString(KEY_POINTS, String.valueOf(points));
+        editor.putString(KEY_POINTS, points);
 
         // commit changes
         editor.commit();

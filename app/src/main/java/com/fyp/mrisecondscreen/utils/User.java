@@ -165,7 +165,7 @@ public class User {
 
     public void updateSession() {
         session.createLoginSession(name, email, ID, password, gender, relationshipStatus, birthday,
-                location, MAC, mobileNumber, String.valueOf(loggedInFromFacebook), city, country, points);
+                location, MAC, mobileNumber, String.valueOf(loggedInFromFacebook), city, country, String.valueOf(points));
     }
 
     public void updateProfile() {
