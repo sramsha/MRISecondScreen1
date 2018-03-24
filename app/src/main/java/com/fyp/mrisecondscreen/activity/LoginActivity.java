@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +56,10 @@ public class LoginActivity extends AppCompatActivity {
     CallbackManager callbackmanager;
     User user;
 
+    private static TextView recordText;
+    private static ProgressBar progressBar;
+    private static ScrollView loginView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +76,9 @@ public class LoginActivity extends AppCompatActivity {
         final EditText login_password = findViewById(R.id.login_password);
         final Button login_button = findViewById(R.id.login_button);
         final TextView registerlink = findViewById(R.id.login_register);
+        recordText = findViewById(R.id.SigningInText);
+        progressBar = findViewById(R.id.SigningInProgressBar);
+        loginView = findViewById(R.id.LoginView);
 
         FacebookSdk.setIsDebugEnabled(true);
         FacebookSdk.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
@@ -80,7 +89,8 @@ public class LoginActivity extends AppCompatActivity {
         {
             @Override
             public void onClick (View v){
-                buttonAnimation(v, 3500);
+                //buttonAnimation(v, 500);
+                loginView.setVisibility(View.GONE);
             }
         });
 
@@ -100,6 +110,10 @@ public class LoginActivity extends AppCompatActivity {
                         Log.e("[FB]ACCESS TOKEN", accessToken);
                         user.setMAC(getMacAddress());
                         user.setPassword(user.getID() + user.getEmail() + user.getGender());
+
+                        Toast.makeText(LoginActivity.this, "Facebook authentication successful", Toast.LENGTH_SHORT).show();
+                        loginView.setVisibility(View.VISIBLE);
+
                         FBRegisterLoginHandler(user);
                     }
                 });
@@ -115,6 +129,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onCancel() {
                 /* if needed */
                 Toast.makeText(LoginActivity.this, "Facebook login cancelled", Toast.LENGTH_SHORT).show();
+
+                loginView.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -124,6 +140,8 @@ public class LoginActivity extends AppCompatActivity {
                         .setNegativeButton("Retry", null)
                         .create()
                         .show();
+
+                loginView.setVisibility(View.VISIBLE);
             }
         });
 
@@ -168,7 +186,11 @@ public class LoginActivity extends AppCompatActivity {
                         login_username.setFocusable(true);
                         login_username.requestFocus();*/
 
-                        buttonAnimation(v, 2500);
+                        //buttonAnimation(v, 2500);
+                        loginView.setVisibility(View.GONE);
+                        recordText.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.VISIBLE);
+                        Log.e("UPDATE:","PROGRESS BAR SHOULD BE VISIBLE!");
                         LoginHandler(username, password);
                     }
                     else
@@ -285,6 +307,10 @@ public class LoginActivity extends AppCompatActivity {
 */
                         user.updateSession();
 
+                        recordText.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.GONE);
+                        loginView.setVisibility(View.VISIBLE);
+
                         Toast.makeText(getApplicationContext(), "Logged in succesfully!", Toast.LENGTH_LONG).show();
                         LoginActivity.this.startActivity(intent);
                         LoginActivity.this.finish();
@@ -295,6 +321,10 @@ public class LoginActivity extends AppCompatActivity {
                                 .setNegativeButton("Retry", null)
                                 .create()
                                 .show();
+
+                        recordText.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.GONE);
+                        loginView.setVisibility(View.VISIBLE);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
