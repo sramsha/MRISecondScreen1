@@ -29,15 +29,6 @@ public class AdDialog {
         TextView text = (TextView) dialog.findViewById(R.id.banner_text);
         text.setText(ad.getOfferContent());
 
-        Button redeemButton = (Button) dialog.findViewById(R.id.banner_redeem);
-        redeemButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(activity, "Offer/Voucher Redeemed!", Toast.LENGTH_LONG).show();
-                dialog.dismiss();
-            }
-        });
-
         Button laterButton = (Button) dialog.findViewById(R.id.banner_cancel);
         laterButton.setOnClickListener(new View.OnClickListener() {
             @Override

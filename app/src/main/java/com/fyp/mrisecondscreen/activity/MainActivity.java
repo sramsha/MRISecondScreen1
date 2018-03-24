@@ -527,25 +527,16 @@ public class MainActivity extends NavDrawerActivity {
 
                         dialog.show();
 
-                        Button redeemButton = dialog.findViewById(R.id.banner_redeem);
-                        redeemButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Toast.makeText(MainActivity.this, "Offer/Voucher Redeemed!", Toast.LENGTH_LONG).show();
-                                dialog.dismiss();
-                            }
-                        });
-
                         Button laterButton = dialog.findViewById(R.id.banner_cancel);
                         laterButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Toast.makeText(MainActivity.this, "Offer/Voucher Saved!", Toast.LENGTH_LONG).show();
+                                Toast.makeText(MainActivity.this, "Offer/Voucher Redeemed!", Toast.LENGTH_LONG).show();
                                 Intent intent = new Intent(MainActivity.this, OffersActivity.class);
                                 startActivity(intent);
                                 dialog.dismiss();
                                 finish();
-
+                                // TODO: Handle further logic
                             }
                         });
 
@@ -588,7 +579,7 @@ public class MainActivity extends NavDrawerActivity {
 
                                 if (ShareDialog.canShow(ShareLinkContent.class)) {
                                     ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                                            .setQuote("I just caught offer from " + runningAd.getOfferTitle() + ".\n" + runningAd.getOfferContent())
+                                            .setQuote("I just got voucher from " + runningAd.getOfferTitle() + ".\n" + runningAd.getOfferContent())
                                             .setContentUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.fyp.mrisecondscreen"))
                                             .setShareHashtag(new ShareHashtag.Builder()
                                                     .setHashtag("#MediaIcon")
