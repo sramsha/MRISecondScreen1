@@ -13,9 +13,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.StrictMode;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -57,6 +59,7 @@ import com.fyp.mrisecondscreen.R;
 import com.fyp.mrisecondscreen.db.DatabaseHelper;
 import com.fyp.mrisecondscreen.entity.BannerAd;
 import com.fyp.mrisecondscreen.utils.AudioRecorder;
+import com.fyp.mrisecondscreen.utils.ChatHeadService;
 import com.fyp.mrisecondscreen.utils.ImageUtil;
 import com.fyp.mrisecondscreen.utils.User;
 
@@ -103,6 +106,7 @@ public class MainActivity extends NavDrawerActivity {
 
     private static final int AD_WATCHED_FIRST_TIME = 5;
     private static final int AD_WATCHED_ALREADY = 1;
+    private static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 2084;
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -233,6 +237,24 @@ public class MainActivity extends NavDrawerActivity {
 
             }
         });
+
+        /* Chat Head Service */
+
+        //Check if the application has draw over other apps permission or not?
+        //This permission is by default available for API<23. But for API > 23
+        //you have to ask for the permission in runtime.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+
+            //If the draw over permission is not available open the settings screen
+            //to grant the permission.
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, CODE_DRAW_OVER_OTHER_APP_PERMISSION);
+        } else {
+            startChatHeadService();
+        }
+
+        /* Chat Head Service */
 
     }
 
@@ -687,6 +709,30 @@ public class MainActivity extends NavDrawerActivity {
         AlphaAnimation buttonClick = new AlphaAnimation(1.0F, 0.1F);
         buttonClick.setDuration(i);
         v.startAnimation(buttonClick);
+    }
+
+    private void startChatHeadService() {
+        startService(new Intent(MainActivity.this, ChatHeadService.class));
+        finish();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CODE_DRAW_OVER_OTHER_APP_PERMISSION) {
+
+            //Check if the permission is granted or not.
+            if (resultCode == RESULT_OK) {
+                startChatHeadService();
+            } else { //Permission is not available
+                Toast.makeText(this,
+                        "Draw over other app permission not available. Closing the application",
+                        Toast.LENGTH_SHORT).show();
+
+                finish();
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
 }
