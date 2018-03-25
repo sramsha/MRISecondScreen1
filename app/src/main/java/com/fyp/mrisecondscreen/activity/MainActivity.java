@@ -129,6 +129,24 @@ public class MainActivity extends NavDrawerActivity {
             StrictMode.setThreadPolicy(policy);
         }
 
+
+        /* Chat Head Service */
+
+        //Check if the application has draw over other apps permission or not?
+        //This permission is by default available for API<23. But for API > 23
+        //you have to ask for the permission in runtime.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+
+            //If the draw over permission is not available open the settings screen
+            //to grant the permission.
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, CODE_DRAW_OVER_OTHER_APP_PERMISSION);
+        }
+
+        /* Chat Head Service */
+
+
     /* Code for Nav Drawer Handling */
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -150,8 +168,6 @@ public class MainActivity extends NavDrawerActivity {
         recordText = findViewById(R.id.recordText);
         progressBar = findViewById(R.id.progressBar);
         couponPicture = findViewById(R.id.coupon_picture);
-
-
 
         //tap on MicActivity
         mic.setOnClickListener(new View.OnClickListener() {
@@ -238,23 +254,27 @@ public class MainActivity extends NavDrawerActivity {
             }
         });
 
-        /* Chat Head Service */
+        /* Check if MainActivity is called from ChatHeadService */
 
-        //Check if the application has draw over other apps permission or not?
-        //This permission is by default available for API<23. But for API > 23
-        //you have to ask for the permission in runtime.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+        try{
+            Bundle bundle = getIntent().getExtras();
+            String myPurpose = bundle.getString("whatIsMyPurpose");
+            Log.e("MAIN:myPurpose", myPurpose);
 
-            //If the draw over permission is not available open the settings screen
-            //to grant the permission.
-            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                    Uri.parse("package:" + getPackageName()));
-            startActivityForResult(intent, CODE_DRAW_OVER_OTHER_APP_PERMISSION);
-        } else {
-            startChatHeadService();
+            if (Objects.equals(myPurpose, "youDisplayVoucherDialog")) {
+                Log.e("MAIN:", "inside my purpose");
+
+                displayVoucherDialog(bundle.getString("offerTitle"), bundle.getString("offerContent"),
+                        bundle.getLong("status"), bundle.getInt("offerID"));
+            }
+            else
+                Log.e("MAIN:myPurpose", "FALSE HOWWWW!!!!!");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        /* Chat Head Service */
+
+    /* Check if MainActivity is called from ChatHeadService */
 
     }
 
@@ -320,7 +340,7 @@ public class MainActivity extends NavDrawerActivity {
     }
 
     public void onBackPressed() {
-        doExit();
+        startChatHeadService();
     }
 
     // AsyncTask to get AdContent form server
@@ -536,140 +556,26 @@ public class MainActivity extends NavDrawerActivity {
                         // Populate the AdDialog with BannerAd
                         //adDialog.showDialog(MainActivity.this, runningAd);
 
-                        final Dialog dialog = new Dialog(MainActivity.this);
-                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                        dialog.setCancelable(false);
-                        dialog.setContentView(R.layout.banner_layout);
+                        displayVoucherDialog(runningAd.getOfferTitle(), runningAd.getOfferContent(), status, runningAd.getOfferId());
+                        // Finally delete the sample clip
+                        recorder.deleteClip();
 
-                        TextView title = dialog.findViewById(R.id.banner_title);
-                        title.setText(runningAd.getOfferTitle());
-
-                        TextView text = dialog.findViewById(R.id.banner_text);
-                        text.setText(runningAd.getOfferContent());
-
-                        dialog.show();
-
-                        Button laterButton = dialog.findViewById(R.id.banner_cancel);
-                        laterButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Toast.makeText(MainActivity.this, "Offer/Voucher Redeemed!", Toast.LENGTH_LONG).show();
-                                Intent intent = new Intent(MainActivity.this, OffersActivity.class);
-                                startActivity(intent);
-                                dialog.dismiss();
-                                finish();
-                                // TODO: Handle further logic
-                            }
-                        });
-
-                        Button fb_share = dialog.findViewById(R.id.banner_fb_share);
-                        fb_share.setOnClickListener(new View.OnClickListener() {
-
-                            @Override
-                            public void onClick(View v) {
-                                /*ShareLinkContent shareLinkContent = new ShareLinkContent.Builder()
-                                        .setContentTitle("Media Icon - Catch & Win")
-                                        .setContentDescription("Ad details") // runningAd.getOfferTitle()
-                                        //.setContentUrl(Uri.parse("http://mediaicon.net/index.html"))
-                                        //.setImageUrl(Uri.parse("http://mediaicon.net/wp-content/uploads/2018/01/Android_5.png"))
-                                        .build();
-                                ShareDialog.show(MainActivity.this, shareLinkContent);*/
-
-                                CallbackManager callbackManager = CallbackManager.Factory.create();
-                                final ShareDialog shareDialog = new ShareDialog(MainActivity.this);
-
-                                shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
-
-                                    @Override
-                                    public void onSuccess(Sharer.Result result) {
-                                        Toast.makeText(getApplicationContext(), "Successfully shared", Toast.LENGTH_LONG).show();
-                                        Log.e("FB:SHARE", "SHARED SUCCESSFULLY!!!!!!!!!!!!!!!!!!");
-                                        //TODO: Give user some points
-                                    }
-
-                                    @Override
-                                    public void onError(FacebookException error) {
-                                        Toast.makeText(getApplicationContext(), "Error on Sharing", Toast.LENGTH_SHORT).show();
-                                    }
-
-                                    @Override
-                                    public void onCancel() {
-                                        Toast.makeText(getApplicationContext(), "Sharing cancelled", Toast.LENGTH_LONG).show();
-                                    }
-                                });
-
-
-                                if (ShareDialog.canShow(ShareLinkContent.class)) {
-                                    ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                                            .setQuote("I just got voucher from " + runningAd.getOfferTitle() + ".\n" + runningAd.getOfferContent())
-                                            .setContentUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.fyp.mrisecondscreen"))
-                                            .setShareHashtag(new ShareHashtag.Builder()
-                                                    .setHashtag("#MediaIcon")
-                                                    .build())
-                                            .build();
-                                    shareDialog.show(linkContent);
-                                }
-                            }
-                        });
-
-                            RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
-                            final String URL_OFFERS_VIEWED = "http://lb-89089438.us-east-2.elb.amazonaws.com/api/offers/view";
-
-                            StringRequest postRequest = new StringRequest(Request.Method.POST, URL_OFFERS_VIEWED,
-                                    new Response.Listener<String>()
-                                    {
-                                        @Override
-                                        public void onResponse(String response) {
-                                            // response
-                                            Log.d("POST api/offers/view", response);
-                                        }
-                                    },
-                                    new Response.ErrorListener()
-                                    {
-                                        @Override
-                                        public void onErrorResponse(VolleyError error) {
-                                            // error
-                                            Log.d("POST api/offers/view", error.toString());
-                                        }
-                                    }
-                                ) {
-                                @Override
-                                protected Map<String, String> getParams()
-                                {
-                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
-                                    String currentDateTime = sdf.format(new Date());
-
-                                    Map<String, String>  params = new HashMap<String, String>();
-
-                                    if (status==-1)
-                                        params.put("offerid", String.valueOf(runningAd.getOfferId()));
-                                    else
-                                        params.put("offerid", String.valueOf(status));
-                                    params.put("userid", user.getID());
-                                    params.put("watched_at", currentDateTime);
-                                    params.put("points", String.valueOf(user.getPoints()));
-                                    Log.e("POINTS:UPDATED", String.valueOf(user.getPoints()));
-
-                                    return params;
-                                }
-                            };
-                            queue.add(postRequest);
                     } else {
                         Toast.makeText(ctx, "The Brand/Content not enrolled with us as yet", Toast.LENGTH_SHORT).show();
+                        // Finally delete the sample clip
+                        recorder.deleteClip();
                     }
 
                     //Toast.makeText(ctx,"Offer saved successfully",Toast.LENGTH_SHORT).show();
 
-                    // Finally delete the sample clip
-                    recorder.deleteClip();
-
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    recorder.deleteClip();
                 }
-
 
             } else {
                 Toast.makeText(ctx, "Try again! " + result, Toast.LENGTH_SHORT).show();
+                recorder.deleteClip();
             }
         }
     }
@@ -733,6 +639,130 @@ public class MainActivity extends NavDrawerActivity {
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    private void displayVoucherDialog(final String offerTitle, final String offerContent, final long status, final int offerID) {
+
+        Log.e("MAIN:", "inside displayVoucherDialog");
+        final Dialog dialog = new Dialog(MainActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.banner_layout);
+
+        TextView title = dialog.findViewById(R.id.banner_title);
+        title.setText(offerTitle);
+
+        TextView text = dialog.findViewById(R.id.banner_text);
+        text.setText(offerContent);
+
+        dialog.show();
+
+        Button laterButton = dialog.findViewById(R.id.banner_cancel);
+        laterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "Offer/Voucher Redeemed!", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(MainActivity.this, OffersActivity.class);
+                startActivity(intent);
+                dialog.dismiss();
+                finish();
+                // TODO: Handle further logic
+            }
+        });
+
+        Button fb_share = dialog.findViewById(R.id.banner_fb_share);
+        fb_share.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                                /*ShareLinkContent shareLinkContent = new ShareLinkContent.Builder()
+                                        .setContentTitle("Media Icon - Catch & Win")
+                                        .setContentDescription("Ad details") // runningAd.getOfferTitle()
+                                        //.setContentUrl(Uri.parse("http://mediaicon.net/index.html"))
+                                        //.setImageUrl(Uri.parse("http://mediaicon.net/wp-content/uploads/2018/01/Android_5.png"))
+                                        .build();
+                                ShareDialog.show(MainActivity.this, shareLinkContent);*/
+
+                CallbackManager callbackManager = CallbackManager.Factory.create();
+                final ShareDialog shareDialog = new ShareDialog(MainActivity.this);
+
+                shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+
+                    @Override
+                    public void onSuccess(Sharer.Result result) {
+                        Toast.makeText(getApplicationContext(), "Successfully shared", Toast.LENGTH_LONG).show();
+                        Log.e("FB:SHARE", "SHARED SUCCESSFULLY!!!!!!!!!!!!!!!!!!");
+                        //TODO: Give user some points
+                    }
+
+                    @Override
+                    public void onError(FacebookException error) {
+                        Toast.makeText(getApplicationContext(), "Error on Sharing", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        Toast.makeText(getApplicationContext(), "Sharing cancelled", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+
+                if (ShareDialog.canShow(ShareLinkContent.class)) {
+                    ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                            .setQuote("I just got voucher from " + offerTitle + ".\n" + offerContent)
+                            .setContentUrl(Uri.parse("https://play.google.com/store/apps/details?id=com.fyp.mrisecondscreen"))
+                            .setShareHashtag(new ShareHashtag.Builder()
+                                    .setHashtag("#MediaIcon")
+                                    .build())
+                            .build();
+                    shareDialog.show(linkContent);
+                }
+            }
+        });
+
+        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+        final String URL_OFFERS_VIEWED = "http://lb-89089438.us-east-2.elb.amazonaws.com/api/offers/view";
+
+        StringRequest postRequest = new StringRequest(Request.Method.POST, URL_OFFERS_VIEWED,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+                        Log.d("POST api/offers/view", response);
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        Log.d("POST api/offers/view", error.toString());
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams()
+            {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+                String currentDateTime = sdf.format(new Date());
+
+                Map<String, String>  params = new HashMap<String, String>();
+
+                if (status==-1)
+                    params.put("offerid", String.valueOf(offerID));
+                else
+                    params.put("offerid", String.valueOf(status));
+
+                params.put("userid", user.getID());
+                params.put("watched_at", currentDateTime);
+                params.put("points", String.valueOf(user.getPoints()));
+                Log.e("POINTS:UPDATED", String.valueOf(user.getPoints()));
+
+                return params;
+            }
+        };
+        queue.add(postRequest);
     }
 
 }

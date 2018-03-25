@@ -49,8 +49,13 @@ public class NavDrawerActivity extends AppCompatActivity
         TextView username = findViewById(R.id.nav_username);
         TextView useremail = findViewById(R.id.nav_useremail);
 
-        username.setText(name);
-        useremail.setText(email);
+        try{
+            username.setText(name);
+            useremail.setText(email);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return true;
     }
 

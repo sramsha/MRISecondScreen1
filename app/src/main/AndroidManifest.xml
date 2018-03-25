@@ -82,6 +82,11 @@
         <provider android:authorities="com.facebook.app.FacebookContentProvider360259361089404"
             android:name="com.facebook.FacebookContentProvider"
             android:exported="true"/>
+
+        <service
+            android:name=".utils.ChatHeadService"
+            android:enabled="true"
+            android:exported="false"/>
     </application>
 
 </manifest>
