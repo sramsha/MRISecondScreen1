@@ -92,6 +92,7 @@ public class MainActivity extends NavDrawerActivity {
 
     User user;
     public static final int RequestPermissionCode = 1;
+    public boolean CHAT_HEAD_SERVICE_REQUESTING = false;
     private static final String SERVER_MATCH_URL = "http://lb-89089438.us-east-2.elb.amazonaws.com/api/clip/match";
     private static final String SERVER_MEDIA_URL = "http://lb-89089438.us-east-2.elb.amazonaws.com/admin/uploads/images/";
     private static TextView recordText;
@@ -267,8 +268,11 @@ public class MainActivity extends NavDrawerActivity {
                 displayVoucherDialog(bundle.getString("offerTitle"), bundle.getString("offerContent"),
                         bundle.getLong("status"), bundle.getInt("offerID"));
             }
-            else
-                Log.e("MAIN:myPurpose", "FALSE HOWWWW!!!!!");
+
+            else if (Objects.equals(myPurpose, "youBringMeRecordingPermissions")) {
+                CHAT_HEAD_SERVICE_REQUESTING = true;
+                requestPermission();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -322,6 +326,10 @@ public class MainActivity extends NavDrawerActivity {
                     if (StoragePermission && RecordPermission) {
                         Toast.makeText(MainActivity.this, "Permission Granted",
                                 Toast.LENGTH_LONG).show();
+                        if (CHAT_HEAD_SERVICE_REQUESTING) {
+                            CHAT_HEAD_SERVICE_REQUESTING = false;
+                            startChatHeadService();
+                        }
                     } else {
                         Toast.makeText(MainActivity.this, "Permission Denied", Toast.LENGTH_LONG).show();
                     }

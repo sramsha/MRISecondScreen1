@@ -1,6 +1,5 @@
 package com.fyp.mrisecondscreen.utils;
 
-import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +11,6 @@ import android.os.AsyncTask;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.StrictMode;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
@@ -119,13 +117,11 @@ public class ChatHeadService extends Service {
         final ImageView chatHeadImage = mChatHeadView.findViewById(R.id.chat_head_profile_iv);
         final Animation animRotate = AnimationUtils.loadAnimation(this, R.anim.anim_rotate);
 
-        int i = 0;
         chatHeadImage.setOnTouchListener(new View.OnTouchListener() {
             private int initialX;
             private int initialY;
             private float initialTouchX;
             private float initialTouchY;
-            int i = 0;
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -151,7 +147,6 @@ public class ChatHeadService extends Service {
                 {
                     {
                         if(checkPermission()) {
-
                             if (checkActiveInternetConnection())
                             {
                                 recorder = new AudioRecorder();
@@ -195,7 +190,11 @@ public class ChatHeadService extends Service {
                             }
                         }
                         else {
-                            requestPermission((Activity) getApplicationContext());
+                            stopSelf();
+                            Intent intent = new Intent(ChatHeadService.this, MainActivity.class);
+                            intent.putExtra("whatIsMyPurpose", "youBringMeRecordingPermissions");
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
                         }
                     }
 
@@ -268,11 +267,6 @@ public class ChatHeadService extends Service {
             isAvailable = true;
         }
         return isAvailable;
-    }
-
-    private void requestPermission(Activity chatHeadService) {
-        ActivityCompat.requestPermissions(chatHeadService, new
-                String[]{WRITE_EXTERNAL_STORAGE, RECORD_AUDIO}, RequestPermissionCode);
     }
 
     private void buttonAnimation(View v, int i) {
